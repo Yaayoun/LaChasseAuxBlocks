@@ -1,0 +1,8 @@
+name: LCABPlugin
+main: com.yaadanial.lachasseauxblocks.plugin.LCABPlugin
+version: 0.1
+
+commands:
+   lcab:
+      description: La Chasse Aux Blocks
+      usage: /lcab <subcommand>

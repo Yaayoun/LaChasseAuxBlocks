@@ -1,0 +1,8 @@
+episodeLength: 20
+compass: true
+weather: false
+daylightCycle:
+    do: false
+    time: 6000
+allow-reconnect: true
+scoreboard: La Chasse Aux Blocks
