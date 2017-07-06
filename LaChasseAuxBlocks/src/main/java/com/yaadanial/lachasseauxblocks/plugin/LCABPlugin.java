@@ -100,11 +100,11 @@ public class LCABPlugin extends JavaPlugin {
 	private void CreateBackWallOfAltar(Player pl, World w) {
 		for (int i = 0; i < 3; i++){
 			for (int j = -2; j < 3; j++){
-				CreateBlockGranite(pl, w, 7, i, j);
+				CreateBlockGranite(pl, w, 6, i, j);
 			}
 		}
-		CreateBlockRandom(pl, w, 7, 1, -1);
-		CreateBlockRandom(pl, w, 7, 1, 1);
+		CreateBlockRandom(pl, w, 6, 1, -1);
+		CreateBlockRandom(pl, w, 6, 1, 1);
 	}
 
 	/**
