@@ -60,10 +60,10 @@ public class LCABPlugin extends JavaPlugin {
 				if (!this.gameRunning) {
 					CreateAltar(pl);
 
-					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "--- L'Autel à Spawn ---");
+					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
 				} else {
-					Bukkit.getServer().broadcastMessage(ChatColor.RED + "La Chasse est déjà lancé !");
+					Bukkit.getServer().broadcastMessage(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
 				return true;
 			}
