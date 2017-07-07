@@ -70,9 +70,29 @@ public class LCABPlugin extends JavaPlugin {
 				return true;
 			}
 			else if(a[0].equalsIgnoreCase("stop")) {
+				if(this.gameRunning == false)
+				{
+					Bukkit.getServer().broadcastMessage(ChatColor.RED + "Aucune chasse en cours !");
+					return true;
+				}
 				// On arrête la chasse.
 				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "--- La chasse a été annulée par "+ s.getName() +" ---");
 				this.gameRunning = false;
+				altar = new ArrayList<Block>();
+				return true;
+			}
+			else if(a[0].equalsIgnoreCase("tp")) {
+				// Téléporte le joueur sur l'autel
+				if (a.length <= 1) {
+					pl.sendMessage("Usage : /lcab tp <player>");
+					return true;
+				}
+				if(this.gameRunning == false)
+				{
+					pl.sendMessage("La chasse doit être lancée pour se tp sur l'autel");
+					return true;
+				}
+				pl.sendMessage("Cette fonctionnalité sera implémentée dans une version ultérieure");
 				return true;
 			}
 		}
