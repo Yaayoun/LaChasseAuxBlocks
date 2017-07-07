@@ -56,6 +56,7 @@ public class LCABPlugin extends JavaPlugin {
 			}
 			if (a[0].equalsIgnoreCase("start")) {
 				CreateAltar(pl);
+				return true;
 			}
 		}
 		return false;
@@ -122,7 +123,7 @@ public class LCABPlugin extends JavaPlugin {
 	}
 
 	/**
-	 * Créer un Block de Granite
+	 * Créer un Block de Granite 
 	 * 
 	 * @param pl le Joueur
 	 * @param w le Monde
