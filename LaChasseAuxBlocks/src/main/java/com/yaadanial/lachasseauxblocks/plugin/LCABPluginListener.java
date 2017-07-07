@@ -13,24 +13,24 @@ public class LCABPluginListener implements Listener {
 	public LCABPluginListener(LCABPlugin p) {
 		this.p = p;
 	}
-	
+
 	@EventHandler
 	public void onBlockBreakEvent(final BlockBreakEvent ev) {
 		if (this.p.isGameRunning() && p.getAltar().contains(ev.getBlock())) {
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onBlockPlaceEvent(final BlockPlaceEvent ev) {
 		boolean isOnTheAltar = false;
 		if (this.p.isGameRunning() && p.getAltar().contains(ev.getBlock())) {
-			for (Block block : p.getAltar()){
-				if (block.getX()==ev.getBlock().getX() && block.getY()<=ev.getBlock().getY() && block.getZ()==ev.getBlock().getZ()){
+			for (Block block : p.getAltar()) {
+				if (block.getX() == ev.getBlock().getX() && block.getY() <= ev.getBlock().getY() && block.getZ() == ev.getBlock().getZ()) {
 					isOnTheAltar = true;
 				}
 			}
-			if (isOnTheAltar){
+			if (isOnTheAltar) {
 				ev.setCancelled(true);
 			}
 		}
