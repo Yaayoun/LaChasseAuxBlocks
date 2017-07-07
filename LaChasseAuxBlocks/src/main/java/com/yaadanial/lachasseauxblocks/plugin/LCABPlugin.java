@@ -1,11 +1,14 @@
 package com.yaadanial.lachasseauxblocks.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -20,7 +23,8 @@ public class LCABPlugin extends JavaPlugin {
 
 	private Logger logger = null;
 	private Scoreboard sb = null;
-	private Random random = null;
+	private Boolean gameRunning = false;
+	private List<Block> altar = new ArrayList<Block>();
 
 	@Override
 	public void onEnable() {
@@ -55,7 +59,14 @@ public class LCABPlugin extends JavaPlugin {
 				return true;
 			}
 			if (a[0].equalsIgnoreCase("start")) {
-				CreateAltar(pl);
+				if (!this.gameRunning){
+					CreateAltar(pl);
+					
+					Bukkit.getServer().broadcastMessage(ChatColor.GREEN+"--- L'Autel à Spawn ---");
+					this.gameRunning = true;
+				} else {
+					Bukkit.getServer().broadcastMessage(ChatColor.RED+"La Chasse est déjà lancé !");
+				}
 				return true;
 			}
 		}
@@ -74,8 +85,6 @@ public class LCABPlugin extends JavaPlugin {
 		CreateBlockAndesite(pl, w, 3, 0, -1);
 		CreateBlockAndesite(pl, w, 3, 0, 1);
 		CreateBackWallOfAltar(pl, w);
-		
-		Bukkit.getServer().broadcastMessage(ChatColor.GREEN+"--- L'Autel à Spawn ---");
 	}
 
 	/**
@@ -118,8 +127,10 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param z la position en Z du Block
 	 */
 	private void CreateBlockAndesite(Player pl, World w, int x, int y, int z) {
-		w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z).setType(Material.STONE);
-		w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z).setData((byte)6);
+		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
+		block.setType(Material.STONE);
+		block.setData((byte)6);
+		altar.add(block);
 	}
 
 	/**
@@ -132,8 +143,10 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param z la position en Z du Block
 	 */
 	private void CreateBlockGranite(Player pl, World w, int x, int y, int z) {
-		w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z).setType(Material.STONE);
-		w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z).setData((byte)2);
+		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
+		block.setType(Material.STONE);
+		block.setData((byte)2);
+		altar.add(block);
 	}
 
 	/**
@@ -146,13 +159,22 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param z la position en Z du Block
 	 */
 	private void CreateBlockRandom(Player pl, World w, int x, int y, int z) {
+		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
 		Random random = new Random();
 		Material[] materials = Material.values();
 		int size = materials.length;
 		int index = random.nextInt(size);
 		Material randomMaterial = materials[index];
-		w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z).setType(randomMaterial);
+		block.setType(randomMaterial);
+		altar.add(block);
 		Bukkit.getServer().broadcastMessage(ChatColor.GRAY+"Le Block " + randomMaterial.name() + " est à chercher ! (id=" + randomMaterial.getId() + ")");
 	}
-
+	
+	public boolean isGameRunning() {
+		return this.gameRunning;
+	}
+	
+	public List<Block> getAltar() {
+		return this.altar;
+	}
 }
