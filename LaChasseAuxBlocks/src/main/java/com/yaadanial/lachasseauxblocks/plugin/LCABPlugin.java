@@ -42,7 +42,9 @@ public class LCABPlugin extends JavaPlugin {
 	}
 
 	public boolean onCommand(final CommandSender s, Command c, String l, String[] a) {
-		if (c.getName().equalsIgnoreCase("lcab")) {
+		String command = c.getName().toLowerCase();
+		switch(command) {
+		case "lcab":
 			if (!(s instanceof Player)) {
 				s.sendMessage(ChatColor.RED + "Vous devez être un joueur");
 				return true;
@@ -53,7 +55,7 @@ public class LCABPlugin extends JavaPlugin {
 				return true;
 			}
 			if (a.length == 0) {
-				pl.sendMessage("Usage : /lcab <start>");
+				pl.sendMessage("Usage : /lcab <start|stop|tp>");
 				return true;
 			}
 			if (a[0].equalsIgnoreCase("start")) {
@@ -65,6 +67,12 @@ public class LCABPlugin extends JavaPlugin {
 				} else {
 					Bukkit.getServer().broadcastMessage(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
+				return true;
+			}
+			else if(a[0].equalsIgnoreCase("stop")) {
+				// On arrête la chasse.
+				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "--- La chasse a été annulée par "+ s.getName() +" ---");
+				this.gameRunning = false;
 				return true;
 			}
 		}
