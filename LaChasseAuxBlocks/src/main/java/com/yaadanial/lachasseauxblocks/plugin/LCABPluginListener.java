@@ -4,6 +4,8 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class LCABPluginListener implements Listener {
@@ -18,6 +20,30 @@ public class LCABPluginListener implements Listener {
 	public void onBlockBreakEvent(final BlockBreakEvent ev) {
 		if (this.p.isGameRunning() && p.getAltar().contains(ev.getBlock())) {
 			ev.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockBurnEvent(final BlockBurnEvent ev) {
+		if (this.p.isGameRunning() && p.getAltar().contains(ev.getBlock())) {
+			ev.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockExplodeEvent(final BlockExplodeEvent ev) {
+		boolean isExplodeAltar = false;
+		if (this.p.isGameRunning()) {
+			for (Block blockAltar : p.getAltar()) {
+				for (Block blockExplode : ev.blockList()) {
+					if (blockAltar.getLocation() == blockExplode.getLocation()) {
+						isExplodeAltar = true;
+					}
+				}
+			}
+			if (isExplodeAltar) {
+				ev.setCancelled(true);
+			}
 		}
 	}
 
