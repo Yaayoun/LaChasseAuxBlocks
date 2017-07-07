@@ -58,7 +58,7 @@ public class LCABPlugin extends JavaPlugin {
 			}
 			if (a[0].equalsIgnoreCase("start")) {
 				if (!this.gameRunning) {
-					CreateAltar(pl);
+					createAltar(pl);
 
 					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
@@ -76,13 +76,13 @@ public class LCABPlugin extends JavaPlugin {
 	 * 
 	 * @param pl le Joueur
 	 */
-	private void CreateAltar(Player pl) {
+	private void createAltar(Player pl) {
 		World w = pl.getWorld();
 
-		CreateBaseOfAltar(pl, w);
-		CreateBlockAndesite(pl, w, 3, 0, -1);
-		CreateBlockAndesite(pl, w, 3, 0, 1);
-		CreateBackWallOfAltar(pl, w);
+		createBaseOfAltar(pl, w);
+		createBlockAndesite(pl, w, 3, 0, -1);
+		createBlockAndesite(pl, w, 3, 0, 1);
+		createBackWallOfAltar(pl, w);
 	}
 
 	/**
@@ -91,10 +91,10 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param pl le Joueur
 	 * @param w le Monde
 	 */
-	private void CreateBaseOfAltar(Player pl, World w) {
+	private void createBaseOfAltar(Player pl, World w) {
 		for (int i = 0; i < 5; i++) {
 			for (int j = -2; j < 3; j++) {
-				CreateBlockAndesite(pl, w, 2 + i, -1, j);
+				createBlockAndesite(pl, w, 2 + i, -1, j);
 			}
 		}
 	}
@@ -105,14 +105,14 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param pl le Joueur
 	 * @param w le Monde
 	 */
-	private void CreateBackWallOfAltar(Player pl, World w) {
+	private void createBackWallOfAltar(Player pl, World w) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = -2; j < 3; j++) {
-				CreateBlockGranite(pl, w, 6, i, j);
+				createBlockGranite(pl, w, 6, i, j);
 			}
 		}
-		CreateBlockRandom(pl, w, 6, 1, -1);
-		CreateBlockRandom(pl, w, 6, 1, 1);
+		createBlockRandom(pl, w, 6, 1, -1);
+		createBlockRandom(pl, w, 6, 1, 1);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param y la position en Y du Block
 	 * @param z la position en Z du Block
 	 */
-	private void CreateBlockAndesite(Player pl, World w, int x, int y, int z) {
+	private void createBlockAndesite(Player pl, World w, int x, int y, int z) {
 		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
 		block.setType(Material.STONE);
 		block.setData((byte) 6);
@@ -140,7 +140,7 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param y la position en Y du Block
 	 * @param z la position en Z du Block
 	 */
-	private void CreateBlockGranite(Player pl, World w, int x, int y, int z) {
+	private void createBlockGranite(Player pl, World w, int x, int y, int z) {
 		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
 		block.setType(Material.STONE);
 		block.setData((byte) 2);
@@ -156,7 +156,7 @@ public class LCABPlugin extends JavaPlugin {
 	 * @param y la position en Y du Block
 	 * @param z la position en Z du Block
 	 */
-	private void CreateBlockRandom(Player pl, World w, int x, int y, int z) {
+	private void createBlockRandom(Player pl, World w, int x, int y, int z) {
 		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
 		Random random = new Random();
 		Material[] materials = Material.values();
