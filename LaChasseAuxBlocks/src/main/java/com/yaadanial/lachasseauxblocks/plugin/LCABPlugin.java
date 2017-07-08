@@ -199,4 +199,8 @@ public class LCABPlugin extends JavaPlugin {
 	public List<Block> getAltar() {
 		return this.altar;
 	}
+
+	public void logToChat(String log) {
+		Bukkit.getServer().broadcastMessage(ChatColor.RED + log);
+	}
 }
