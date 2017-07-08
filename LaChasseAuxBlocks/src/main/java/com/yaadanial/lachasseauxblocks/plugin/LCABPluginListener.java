@@ -37,7 +37,6 @@ public class LCABPluginListener implements Listener {
 			for (Block blockAltar : p.getAltar()) {
 				for (Block blockExplode : ev.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
-						p.logToChat("L'Autel ne peut pas exploser !");
 						isExplodeAltar = true;
 					}
 				}

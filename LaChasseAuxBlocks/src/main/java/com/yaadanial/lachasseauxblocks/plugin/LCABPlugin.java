@@ -62,19 +62,19 @@ public class LCABPlugin extends JavaPlugin {
 				if (!this.gameRunning) {
 					createAltar(pl);
 
-					Bukkit.getServer().broadcastMessage(ChatColor.GREEN + "--- L'Autel a Spawn ---");
+					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
 				} else {
-					Bukkit.getServer().broadcastMessage(ChatColor.RED + "La Chasse est déjà lancée !");
+					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
 				return true;
 			} else if (a[0].equalsIgnoreCase("stop")) {
 				if (this.gameRunning == false) {
-					Bukkit.getServer().broadcastMessage(ChatColor.RED + "Aucune chasse en cours !");
+					this.logToChat(ChatColor.RED + "Aucune chasse en cours !");
 					return true;
 				}
 				// On arrête la chasse.
-				Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
+				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				this.gameRunning = false;
 				altar = new ArrayList<Block>();
 				return true;
@@ -189,7 +189,7 @@ public class LCABPlugin extends JavaPlugin {
 		Material randomMaterial = materials[index];
 		block.setType(randomMaterial);
 		altar.add(block);
-		Bukkit.getServer().broadcastMessage(ChatColor.GRAY + "Le Block " + randomMaterial.name() + " est à chercher ! (id=" + randomMaterial.getId() + ")");
+		this.logToChat(ChatColor.GRAY + "Le Block " + randomMaterial.name() + " est à chercher ! (id=" + randomMaterial.getId() + ")");
 	}
 
 	public boolean isGameRunning() {
@@ -201,6 +201,6 @@ public class LCABPlugin extends JavaPlugin {
 	}
 
 	public void logToChat(String log) {
-		Bukkit.getServer().broadcastMessage(ChatColor.RED + log);
+		Bukkit.getServer().broadcastMessage(log);
 	}
 }
