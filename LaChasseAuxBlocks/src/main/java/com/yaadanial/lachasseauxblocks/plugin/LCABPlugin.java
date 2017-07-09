@@ -15,14 +15,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 
 public class LCABPlugin extends JavaPlugin {
 
 	private Logger logger = null;
-	private Scoreboard sb = null;
 	private Boolean gameRunning = false;
 	private List<Block> altar = new ArrayList<Block>();
+	private ScoreBoardManager scoreBoardManager = null;
+	private Chronometre chronometre = null;
 
 	@Override
 	public void onEnable() {
@@ -34,6 +34,11 @@ public class LCABPlugin extends JavaPlugin {
 		getServer().getWorlds().get(0).setDifficulty(Difficulty.HARD);
 
 		getServer().getPluginManager().registerEvents(new LCABPluginListener(this), this);
+
+		chronometre = new Chronometre(this);
+
+		scoreBoardManager = new ScoreBoardManager(this);
+		scoreBoardManager.setMatchInfo();
 	}
 
 	@Override
@@ -64,6 +69,7 @@ public class LCABPlugin extends JavaPlugin {
 
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
+					this.chronometre.run();
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
@@ -202,5 +208,21 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void logToChat(String log) {
 		Bukkit.getServer().broadcastMessage(log);
+	}
+
+	public ScoreBoardManager getScoreBoardManager() {
+		return scoreBoardManager;
+	}
+
+	public void setScoreBoardManager(ScoreBoardManager scoreBoardManager) {
+		this.scoreBoardManager = scoreBoardManager;
+	}
+
+	public Chronometre getChronometre() {
+		return chronometre;
+	}
+
+	public void setChronometre(Chronometre chronometre) {
+		this.chronometre = chronometre;
 	}
 }
