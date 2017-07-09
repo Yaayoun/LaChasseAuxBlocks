@@ -37,6 +37,7 @@ public class LCABPluginListener implements Listener {
 				for (Block blockExplode : ev.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
 						ev.setCancelled(true);
+						return;
 					}
 				}
 			}
