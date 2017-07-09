@@ -57,20 +57,24 @@ public class ScoreBoardManager {
 
 		obj.setDisplayName(this.getScoreboardName());
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "0" + ChatColor.GRAY + " Blocks sur " + ChatColor.WHITE + "0")).setScore(5);
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + Bukkit.getServer().getOnlinePlayers().size() + ChatColor.GRAY + " joueurs")).setScore(4);
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + "0" + ChatColor.GRAY + " teams")).setScore(3);
-		obj.getScore(Bukkit.getOfflinePlayer("")).setScore(2);
 		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + formatter.format(plugin.getChronometre().getHours()) + ChatColor.GRAY + ":" + ChatColor.WHITE
 				+ formatter.format(plugin.getChronometre().getMinutes()) + ChatColor.GRAY + ":" + ChatColor.WHITE + formatter.format(plugin.getChronometre().getSeconds()))).setScore(1);
+		obj.getScore(Bukkit.getOfflinePlayer("")).setScore(2);
+		int index = 3;
+		for (Player player : plugin.getServer().getOnlinePlayers()) {
+			obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + player.getName() + " : " + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName()).toString()
+					+ ChatColor.GRAY + "/" + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getNbblocksFindMax())).setScore(index++);
+		}
+		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + "0" + ChatColor.GRAY + " teams")).setScore(index++);
+		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + Bukkit.getServer().getOnlinePlayers().size() + ChatColor.GRAY + " joueurs")).setScore(index++);
 	}
 
 	/**
 	 * Création du scoreboard dans la playerList
 	 */
 	private void createPlayerList() {
-		Objective obj = scoreBoard.registerNewObjective("Vie", "dummy");
-		obj.setDisplayName("Vie");
+		Objective obj = scoreBoard.registerNewObjective("BlocksFind", "dummy");
+		obj.setDisplayName("BlocksFind");
 		obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 	}
 
@@ -95,21 +99,21 @@ public class ScoreBoardManager {
 		return s.substring(0, Math.min(s.length(), 20));
 	}
 
-	public void updatePlayerListName(Player p) {
-		p.setScoreboard(scoreBoard);
-		Integer he = (int) Math.round(p.getHealth());
-		scoreBoard.getObjective("Vie").getScore(p).setScore(he);
+	public void updatePlayerListName(Player player) {
+		player.setScoreboard(scoreBoard);
+		Integer blocksFind = (int) plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName());
+		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(blocksFind);
 	}
 
 	public void addToScoreboard(Player player) {
 		player.setScoreboard(scoreBoard);
-		scoreBoard.getObjective("Vie").getScore(player).setScore(0);
+		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(0);
 		this.updatePlayerListName(player);
 	}
 
-	public void setLife(Player entity, int i) {
+	public void setNbBlocksFind(Player entity, int i) {
 		entity.setScoreboard(scoreBoard);
-		scoreBoard.getObjective("Vie").getScore(entity).setScore(i);
+		scoreBoard.getObjective("BlocksFind").getScore(entity).setScore(i);
 	}
 
 }

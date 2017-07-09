@@ -23,6 +23,7 @@ public class LCABPlugin extends JavaPlugin {
 	private List<Block> altar = new ArrayList<Block>();
 	private ScoreBoardManager scoreBoardManager = null;
 	private Chronometre chronometre = null;
+	private BlocksFindByPlayer blocksFindByPlayer = null;
 
 	@Override
 	public void onEnable() {
@@ -39,6 +40,8 @@ public class LCABPlugin extends JavaPlugin {
 
 		scoreBoardManager = new ScoreBoardManager(this);
 		scoreBoardManager.setMatchInfo();
+
+		blocksFindByPlayer = new BlocksFindByPlayer(0);
 	}
 
 	@Override
@@ -70,6 +73,10 @@ public class LCABPlugin extends JavaPlugin {
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
 					this.chronometre.run();
+					blocksFindByPlayer = new BlocksFindByPlayer(2);
+					for (Player player : getServer().getOnlinePlayers()) {
+						blocksFindByPlayer.addBlocksFindByPlayer(player.getName(), 0);
+					}
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
@@ -83,6 +90,7 @@ public class LCABPlugin extends JavaPlugin {
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				this.gameRunning = false;
 				altar = new ArrayList<Block>();
+				chronometre = new Chronometre(this);
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -224,5 +232,13 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void setChronometre(Chronometre chronometre) {
 		this.chronometre = chronometre;
+	}
+
+	public BlocksFindByPlayer getBlocksFindByPlayer() {
+		return blocksFindByPlayer;
+	}
+
+	public void setBlocksFindByPlayer(BlocksFindByPlayer blocksFindByPlayer) {
+		this.blocksFindByPlayer = blocksFindByPlayer;
 	}
 }
