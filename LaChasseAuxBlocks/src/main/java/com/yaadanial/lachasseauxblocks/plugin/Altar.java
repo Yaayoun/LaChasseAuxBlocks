@@ -27,6 +27,22 @@ public class Altar {
 		this.blocks = blocks;
 	}
 
+	public List<Block> getPlacingBlocks() {
+		return placingBlocks;
+	}
+
+	public void setPlacingBlocks(List<Block> placingBlocks) {
+		this.placingBlocks = placingBlocks;
+	}
+
+	public List<Block> getRandomBlocks() {
+		return randomBlocks;
+	}
+
+	public void setRandomBlocks(List<Block> randomBlocks) {
+		this.randomBlocks = randomBlocks;
+	}
+
 	/**
 	 * Créer l'Autel
 	 */

@@ -32,17 +32,13 @@ public class LCABPluginListener implements Listener {
 
 	@EventHandler
 	public void onBlockExplodeEvent(final EntityExplodeEvent ev) {
-		boolean isExplodeAltar = false;
 		if (this.p.isGameRunning()) {
 			for (Block blockAltar : p.getAltar().getBlocks()) {
 				for (Block blockExplode : ev.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
-						isExplodeAltar = true;
+						ev.setCancelled(true);
 					}
 				}
-			}
-			if (isExplodeAltar) {
-				ev.setCancelled(true);
 			}
 		}
 	}
@@ -51,6 +47,12 @@ public class LCABPluginListener implements Listener {
 	public void onBlockPlaceEvent(final BlockPlaceEvent ev) {
 		if (this.p.isGameRunning() && p.getAltar().getBlocks().contains(ev.getBlock())) {
 			ev.setCancelled(true);
+		} else if (this.p.isGameRunning() && p.getAltar().getPlacingBlocks().contains(ev.getBlock())) {
+			for (Block placingBlock : p.getAltar().getPlacingBlocks()) {
+				if (placingBlock.getX() == ev.getBlock().getX() && placingBlock.getY() == ev.getBlock().getY() && placingBlock.getZ() == ev.getBlock().getZ()) {
+					p.getAltar().getBlocks().add(ev.getBlock());
+				}
+			}
 		}
 	}
 }
