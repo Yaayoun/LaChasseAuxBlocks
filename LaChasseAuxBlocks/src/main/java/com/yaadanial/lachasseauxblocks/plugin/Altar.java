@@ -11,13 +11,19 @@ import org.bukkit.entity.Player;
 public class Altar {
 
 	/** Liste des Blocks de l'Autel **/
-	private List<Block> blocks = new ArrayList<Block>();
+	private List<Block> blocks;
 
 	/** Liste des Blocks à placer dans l'Autel **/
-	private List<Block> placingBlocks = new ArrayList<Block>();
+	private List<Block> placingBlocks;
 
 	/** Liste des Blocks Aléatoires dans l'Autel **/
-	private List<Block> randomBlocks = new ArrayList<Block>();
+	private List<Block> randomBlocks;
+
+	public Altar() {
+		this.blocks = new ArrayList<Block>();
+		this.placingBlocks = new ArrayList<Block>();
+		this.randomBlocks = new ArrayList<Block>();
+	}
 
 	public List<Block> getBlocks() {
 		return blocks;
