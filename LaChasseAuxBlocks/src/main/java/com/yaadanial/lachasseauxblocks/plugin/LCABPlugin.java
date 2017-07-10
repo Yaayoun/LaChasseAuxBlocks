@@ -90,6 +90,19 @@ public class LCABPlugin extends JavaPlugin {
 				}
 				pl.sendMessage("Cette fonctionnalité sera implémentée dans une version ultérieure");
 				return true;
+			} else if (a[0].equalsIgnoreCase("debug")) {
+				AskingBlock ab = new AskingBlock();
+				int i = 0;
+				for (BlockTypeData blockTypeData : ab.getAskingBlock()) {
+					Block block = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + ++i, pl.getLocation().getBlockY() - 1, pl.getLocation().getBlockZ());
+					block.setType(Material.STONE);
+					block.setData((byte) 6);
+					Block block1 = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + i, pl.getLocation().getBlockY(), pl.getLocation().getBlockZ());
+					block1.setType(blockTypeData.getMaterial());
+					block1.setData((byte) (int) blockTypeData.getData());
+					logger.info(i + "/" + ab.getAskingBlock().size() + " : Le Block " + block1.getType() + " a spawn");
+				}
+				return true;
 			}
 		}
 		return false;
