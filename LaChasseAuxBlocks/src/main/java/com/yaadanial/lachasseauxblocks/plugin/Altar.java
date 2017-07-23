@@ -8,7 +8,16 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * Classe de gestion de l'autel
+ * 
+ * @author Yaadanial
+ *
+ */
 public class Altar {
+
+	/** Liste des Blocks de l'Autel **/
+	private Player player;
 
 	/** Liste des Blocks de l'Autel **/
 	private List<Block> blocks;
@@ -23,6 +32,14 @@ public class Altar {
 		this.blocks = new ArrayList<Block>();
 		this.placingBlocks = new ArrayList<Block>();
 		this.randomBlocks = new ArrayList<Block>();
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public List<Block> getBlocks() {
@@ -53,12 +70,13 @@ public class Altar {
 	 * Créer l'Autel
 	 */
 	public void generate(Player pl) {
-		World w = pl.getWorld();
+		this.player = pl;
+		World w = player.getWorld();
 
-		createBaseOfAltar(pl, w);
-		createFirstFloorOfAltar(pl, w);
-		createSecondFloorOfAltar(pl, w);
-		createThirdFloorOfAltar(pl, w);
+		createBaseOfAltar(player, w);
+		createFirstFloorOfAltar(player, w);
+		createSecondFloorOfAltar(player, w);
+		createThirdFloorOfAltar(player, w);
 	}
 
 	/**

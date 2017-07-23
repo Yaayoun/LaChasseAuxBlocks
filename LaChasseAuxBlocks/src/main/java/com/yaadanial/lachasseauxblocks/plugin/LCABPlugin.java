@@ -5,18 +5,26 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 
+/**
+ * Classe Main du Plugin
+ * 
+ * @author Yaadanial
+ *
+ */
 public class LCABPlugin extends JavaPlugin {
 
 	private Logger logger = null;
-	private Scoreboard sb = null;
 	private Boolean gameRunning = false;
 	private Altar altar = null;
+	private ScoreBoardManager scoreBoardManager = null;
+	private BlocksFindByPlayer blocksFindByPlayer = null;
 
 	@Override
 	public void onEnable() {
@@ -29,6 +37,11 @@ public class LCABPlugin extends JavaPlugin {
 		getServer().getWorlds().get(0).setDifficulty(Difficulty.HARD);
 
 		getServer().getPluginManager().registerEvents(new LCABPluginListener(this), this);
+
+		scoreBoardManager = new ScoreBoardManager(this);
+		scoreBoardManager.setMatchInfo();
+
+		blocksFindByPlayer = new BlocksFindByPlayer(0);
 	}
 
 	@Override
@@ -59,6 +72,11 @@ public class LCABPlugin extends JavaPlugin {
 
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
+					scoreBoardManager.getChronometre().run();
+					blocksFindByPlayer = new BlocksFindByPlayer(2);
+					for (Player player : getServer().getOnlinePlayers()) {
+						blocksFindByPlayer.addBlocksFindByPlayer(player.getName(), 0);
+					}
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
@@ -72,6 +90,7 @@ public class LCABPlugin extends JavaPlugin {
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				this.gameRunning = false;
 				altar = new Altar();
+				scoreBoardManager.restartChronometre();
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -95,7 +114,6 @@ public class LCABPlugin extends JavaPlugin {
 					Block block1 = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + i, pl.getLocation().getBlockY(), pl.getLocation().getBlockZ());
 					block1.setType(blockTypeData.getMaterial());
 					block1.setData((byte) (int) blockTypeData.getData());
-					logger.info(i + "/" + ab.getAskingBlock().size() + " : Le Block " + block1.getType() + " a spawn");
 				}
 				return true;
 			}
@@ -113,5 +131,21 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void logToChat(String log) {
 		Bukkit.getServer().broadcastMessage(log);
+	}
+
+	public ScoreBoardManager getScoreBoardManager() {
+		return scoreBoardManager;
+	}
+
+	public void setScoreBoardManager(ScoreBoardManager scoreBoardManager) {
+		this.scoreBoardManager = scoreBoardManager;
+	}
+
+	public BlocksFindByPlayer getBlocksFindByPlayer() {
+		return blocksFindByPlayer;
+	}
+
+	public void setBlocksFindByPlayer(BlocksFindByPlayer blocksFindByPlayer) {
+		this.blocksFindByPlayer = blocksFindByPlayer;
 	}
 }
