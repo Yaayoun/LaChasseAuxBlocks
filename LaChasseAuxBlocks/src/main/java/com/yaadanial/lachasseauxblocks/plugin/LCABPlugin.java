@@ -72,6 +72,7 @@ public class LCABPlugin extends JavaPlugin {
 
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
+					scoreBoardManager.restartChronometre();
 					scoreBoardManager.getChronometre().run();
 					blocksFindByPlayer = new BlocksFindByPlayer(2);
 					for (Player player : getServer().getOnlinePlayers()) {
@@ -88,9 +89,9 @@ public class LCABPlugin extends JavaPlugin {
 				}
 				// On arrête la chasse.
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
+				scoreBoardManager.getChronometre().stop();
 				this.gameRunning = false;
 				altar = new Altar();
-				scoreBoardManager.restartChronometre();
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -147,5 +148,13 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void setBlocksFindByPlayer(BlocksFindByPlayer blocksFindByPlayer) {
 		this.blocksFindByPlayer = blocksFindByPlayer;
+	}
+
+	public Boolean getGameRunning() {
+		return gameRunning;
+	}
+
+	public void setGameRunning(Boolean gameRunning) {
+		this.gameRunning = gameRunning;
 	}
 }

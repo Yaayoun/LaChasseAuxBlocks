@@ -76,16 +76,27 @@ public class LCABPluginListener implements Listener {
 		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
 			event.setCancelled(true);
 		} else if (this.plugin.isGameRunning() && plugin.getAltar().getPlacingBlocks().contains(event.getBlock())) {
+			int index = 0;
 			for (Block placingBlock : plugin.getAltar().getPlacingBlocks()) {
+				//si le block est dans un emplacement à block
 				if (placingBlock.getX() == event.getBlock().getX() && placingBlock.getY() == event.getBlock().getY() && placingBlock.getZ() == event.getBlock().getZ()) {
-					plugin.getAltar().getBlocks().add(event.getBlock());
-					plugin.getBlocksFindByPlayer().addPointToPlayer(plugin.getAltar().getPlayer().getName());
-					if (plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(plugin.getAltar().getPlayer().getName()) >= plugin.getBlocksFindByPlayer().getNbblocksFindMax()) {
-						plugin.logToChat(ChatColor.GREEN + plugin.getAltar().getPlayer().getName() + " a gagné cette chasse aux blocks !");
-						plugin.getScoreBoardManager().getChronometre().stop();
+					//si c'est le bon Block
+					if (plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId()
+							&& plugin.getAltar().getRandomBlocks().get(index).getData() == event.getBlock().getData()) {
+						plugin.getAltar().getBlocks().add(event.getBlock());
+						plugin.getBlocksFindByPlayer().addPointToPlayer(plugin.getAltar().getPlayer().getName());
+						if (plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(plugin.getAltar().getPlayer().getName()) >= plugin.getBlocksFindByPlayer().getNbblocksFindMax()) {
+							plugin.logToChat(ChatColor.GREEN + plugin.getAltar().getPlayer().getName() + " a gagné cette chasse aux blocks !");
+							plugin.getScoreBoardManager().getChronometre().stop();
+							plugin.setGameRunning(false);
+						}
+						return;
+					} else {
+						event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas le bon block !");
+						event.setCancelled(true);
 					}
-					return;
 				}
+				index++;
 			}
 
 		}
