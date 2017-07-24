@@ -23,7 +23,7 @@ public class LCABPlugin extends JavaPlugin {
 	private List<Block> altar = new ArrayList<Block>();
 	private ScoreBoardManager scoreBoardManager = null;
 	private Chronometre chronometre = null;
-	private BlocksFindByPlayer blocksFindByPlayer = null;
+	private BlocksFoundByPlayer blocksFoundByPlayer = null;
 
 	@Override
 	public void onEnable() {
@@ -41,7 +41,7 @@ public class LCABPlugin extends JavaPlugin {
 		scoreBoardManager = new ScoreBoardManager(this);
 		scoreBoardManager.setMatchInfo();
 
-		blocksFindByPlayer = new BlocksFindByPlayer(0);
+		blocksFoundByPlayer = new BlocksFoundByPlayer(0);
 	}
 
 	@Override
@@ -73,9 +73,9 @@ public class LCABPlugin extends JavaPlugin {
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
 					this.chronometre.run();
-					blocksFindByPlayer = new BlocksFindByPlayer(2);
+					blocksFoundByPlayer = new BlocksFoundByPlayer(2);
 					for (Player player : getServer().getOnlinePlayers()) {
-						blocksFindByPlayer.addBlocksFindByPlayer(player.getName(), 0);
+						blocksFoundByPlayer.addBlocksFoundByPlayer(player.getName(), 0);
 					}
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
@@ -234,11 +234,11 @@ public class LCABPlugin extends JavaPlugin {
 		this.chronometre = chronometre;
 	}
 
-	public BlocksFindByPlayer getBlocksFindByPlayer() {
-		return blocksFindByPlayer;
+	public BlocksFoundByPlayer getBlocksFoundByPlayer() {
+		return blocksFoundByPlayer;
 	}
 
-	public void setBlocksFindByPlayer(BlocksFindByPlayer blocksFindByPlayer) {
-		this.blocksFindByPlayer = blocksFindByPlayer;
+	public void setBlocksFoundByPlay(BlocksFoundByPlayer blocksFoundByPlayer) {
+		this.blocksFoundByPlayer = blocksFoundByPlayer;
 	}
 }

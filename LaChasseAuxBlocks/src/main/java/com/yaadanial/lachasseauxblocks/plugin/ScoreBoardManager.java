@@ -62,8 +62,8 @@ public class ScoreBoardManager {
 		obj.getScore(Bukkit.getOfflinePlayer("")).setScore(2);
 		int index = 3;
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
-			obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + player.getName() + " : " + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName()).toString()
-					+ ChatColor.GRAY + "/" + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getNbblocksFindMax())).setScore(index++);
+			obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + player.getName() + " : " + ChatColor.WHITE + plugin.getBlocksFoundByPlayer().getBlocksFoundByPlayer().get(player.getName()).toString()
+					+ ChatColor.GRAY + "/" + ChatColor.WHITE + plugin.getBlocksFoundByPlayer().getNbblocksFoundMax())).setScore(index++);
 		}
 		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + "0" + ChatColor.GRAY + " teams")).setScore(index++);
 		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + Bukkit.getServer().getOnlinePlayers().size() + ChatColor.GRAY + " joueurs")).setScore(index++);
@@ -101,7 +101,7 @@ public class ScoreBoardManager {
 
 	public void updatePlayerListName(Player player) {
 		player.setScoreboard(scoreBoard);
-		Integer blocksFind = (int) plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName());
+		Integer blocksFind = (int) plugin.getBlocksFoundByPlayer().getBlocksFoundByPlayer().get(player.getName());
 		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(blocksFind);
 	}
 

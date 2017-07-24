@@ -25,7 +25,7 @@ public class LCABPluginListener implements Listener {
 		if (!this.plugin.isGameRunning()) {
 			event.getPlayer().setGameMode(GameMode.CREATIVE);
 		}
-		plugin.getBlocksFindByPlayer().addBlocksFindByPlayer(event.getPlayer().getName(), 0);
+		plugin.getBlocksFoundByPlayer().addBlocksFoundByPlayer(event.getPlayer().getName(), 0);
 		plugin.getScoreBoardManager().addToScoreboard(event.getPlayer());
 		Bukkit.getScheduler().runTaskLater(this.plugin, new BukkitRunnable() {
 
