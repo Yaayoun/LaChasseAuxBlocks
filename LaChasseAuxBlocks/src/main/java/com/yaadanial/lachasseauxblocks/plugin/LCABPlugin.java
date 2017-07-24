@@ -1,16 +1,10 @@
 package com.yaadanial.lachasseauxblocks.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +24,7 @@ public class LCABPlugin extends JavaPlugin {
 
 		logger = Bukkit.getLogger();
 		logger.info("LCABPlugin loaded!");
+		altar = new Altar();
 		getServer().getWorlds().get(0).setTime(6000L);
 		getServer().getWorlds().get(0).setStorm(false);
 		getServer().getWorlds().get(0).setDifficulty(Difficulty.HARD);
@@ -68,7 +63,7 @@ public class LCABPlugin extends JavaPlugin {
 			}
 			if (a[0].equalsIgnoreCase("start")) {
 				if (!this.gameRunning) {
-					createAltar(pl);
+					altar.generate(pl);
 
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
@@ -104,113 +99,28 @@ public class LCABPlugin extends JavaPlugin {
 				}
 				pl.sendMessage("Cette fonctionnalité sera implémentée dans une version ultérieure");
 				return true;
+			} else if (a[0].equalsIgnoreCase("debug")) {
+				AskingBlock ab = new AskingBlock();
+				int i = 0;
+				for (BlockTypeData blockTypeData : ab.getAskingBlock()) {
+					Block block = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + ++i, pl.getLocation().getBlockY() - 1, pl.getLocation().getBlockZ());
+					block.setType(Material.STONE);
+					block.setData((byte) 6);
+					Block block1 = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + i, pl.getLocation().getBlockY(), pl.getLocation().getBlockZ());
+					block1.setType(blockTypeData.getMaterial());
+					block1.setData((byte) (int) blockTypeData.getData());
+				}
+				return true;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Créer l'Autel
-	 * 
-	 * @param pl le Joueur
-	 */
-	private void createAltar(Player pl) {
-		World w = pl.getWorld();
-
-		createBaseOfAltar(pl, w);
-		createBlockAndesite(pl, w, 3, 0, -1);
-		createBlockAndesite(pl, w, 3, 0, 1);
-		createBackWallOfAltar(pl, w);
-	}
-
-	/**
-	 * Créer la Base de l'Autel
-	 * 
-	 * @param pl le Joueur
-	 * @param w le Monde
-	 */
-	private void createBaseOfAltar(Player pl, World w) {
-		for (int i = 0; i < 5; i++) {
-			for (int j = -2; j < 3; j++) {
-				createBlockAndesite(pl, w, 2 + i, -1, j);
-			}
-		}
-	}
-
-	/**
-	 * Créer le Mur du fond de l'Autel
-	 * 
-	 * @param pl le Joueur
-	 * @param w le Monde
-	 */
-	private void createBackWallOfAltar(Player pl, World w) {
-		for (int i = 0; i < 3; i++) {
-			for (int j = -2; j < 3; j++) {
-				createBlockGranite(pl, w, 6, i, j);
-			}
-		}
-		createBlockRandom(pl, w, 6, 1, -1);
-		createBlockRandom(pl, w, 6, 1, 1);
-	}
-
-	/**
-	 * Créer un Block d'Andésite
-	 * 
-	 * @param pl le Joueur
-	 * @param w le Monde
-	 * @param x la position en X du Block
-	 * @param y la position en Y du Block
-	 * @param z la position en Z du Block
-	 */
-	private void createBlockAndesite(Player pl, World w, int x, int y, int z) {
-		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
-		block.setType(Material.STONE);
-		block.setData((byte) 6);
-		altar.add(block);
-	}
-
-	/**
-	 * Créer un Block de Granite
-	 * 
-	 * @param pl le Joueur
-	 * @param w le Monde
-	 * @param x la position en X du Block
-	 * @param y la position en Y du Block
-	 * @param z la position en Z du Block
-	 */
-	private void createBlockGranite(Player pl, World w, int x, int y, int z) {
-		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
-		block.setType(Material.STONE);
-		block.setData((byte) 2);
-		altar.add(block);
-	}
-
-	/**
-	 * Créer un Block Aléatoire
-	 * 
-	 * @param pl le Joueur
-	 * @param w le Monde
-	 * @param x la position en X du Block
-	 * @param y la position en Y du Block
-	 * @param z la position en Z du Block
-	 */
-	private void createBlockRandom(Player pl, World w, int x, int y, int z) {
-		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
-		Random random = new Random();
-		Material[] materials = Material.values();
-		int size = materials.length;
-		int index = random.nextInt(size);
-		Material randomMaterial = materials[index];
-		block.setType(randomMaterial);
-		altar.add(block);
-		this.logToChat(ChatColor.GRAY + "Le Block " + randomMaterial.name() + " est à chercher ! (id=" + randomMaterial.getId() + ")");
 	}
 
 	public boolean isGameRunning() {
 		return this.gameRunning;
 	}
 
-	public List<Block> getAltar() {
+	public Altar getAltar() {
 		return this.altar;
 	}
 

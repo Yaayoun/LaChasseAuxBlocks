@@ -57,7 +57,8 @@ public class LCABPluginListener implements Listener {
 			for (Block blockAltar : plugin.getAltar()) {
 				for (Block blockExplode : event.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
-						isExplodeAltar = true;
+						ev.setCancelled(true);
+						return;
 					}
 				}
 			}
