@@ -73,8 +73,8 @@ public class ScoreBoardManager {
 	 * Création du scoreboard dans la playerList
 	 */
 	private void createPlayerList() {
-		Objective obj = scoreBoard.registerNewObjective("BlocksFind", "dummy");
-		obj.setDisplayName("BlocksFind");
+		Objective obj = scoreBoard.registerNewObjective("BlocksFound", "dummy");
+		obj.setDisplayName("BlocksFound");
 		obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 	}
 
@@ -101,19 +101,19 @@ public class ScoreBoardManager {
 
 	public void updatePlayerListName(Player player) {
 		player.setScoreboard(scoreBoard);
-		Integer blocksFind = (int) plugin.getBlocksFoundByPlayer().getBlocksFoundByPlayer().get(player.getName());
-		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(blocksFind);
+		Integer blocksFound = (int) plugin.getBlocksFoundByPlayer().getBlocksFoundByPlayer().get(player.getName());
+		scoreBoard.getObjective("BlocksFound").getScore(player).setScore(blocksFound);
 	}
 
 	public void addToScoreboard(Player player) {
 		player.setScoreboard(scoreBoard);
-		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(0);
+		scoreBoard.getObjective("BlocksFound").getScore(player).setScore(0);
 		this.updatePlayerListName(player);
 	}
 
 	public void setNbBlocksFind(Player entity, int i) {
 		entity.setScoreboard(scoreBoard);
-		scoreBoard.getObjective("BlocksFind").getScore(entity).setScore(i);
+		scoreBoard.getObjective("BlocksFound").getScore(entity).setScore(i);
 	}
 
 }
