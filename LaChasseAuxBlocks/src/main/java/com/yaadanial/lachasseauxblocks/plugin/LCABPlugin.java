@@ -100,7 +100,6 @@ public class LCABPlugin extends JavaPlugin {
 					Block block1 = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + i, pl.getLocation().getBlockY(), pl.getLocation().getBlockZ());
 					block1.setType(blockTypeData.getMaterial());
 					block1.setData((byte) (int) blockTypeData.getData());
-					logger.info(i + "/" + ab.getAskingBlock().size() + " : Le Block " + block1.getType() + " a spawn");
 				}
 				return true;
 			}
