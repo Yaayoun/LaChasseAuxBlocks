@@ -81,18 +81,20 @@ public class LCABPluginListener implements Listener {
 				//si le block est dans un emplacement à block
 				if (placingBlock.getX() == event.getBlock().getX() && placingBlock.getY() == event.getBlock().getY() && placingBlock.getZ() == event.getBlock().getZ()) {
 					//si c'est le bon Block
-					if (plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId()
-							&& plugin.getAltar().getRandomBlocks().get(index).getData() == event.getBlock().getData()) {
+					if (theGoodBlock(event, index)) {
 						plugin.getAltar().getBlocks().add(event.getBlock());
 						plugin.getBlocksFindByPlayer().addPointToPlayer(plugin.getAltar().getPlayer().getName());
 						if (plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(plugin.getAltar().getPlayer().getName()) >= plugin.getBlocksFindByPlayer().getNbblocksFindMax()) {
 							plugin.logToChat(ChatColor.GREEN + plugin.getAltar().getPlayer().getName() + " a gagné cette chasse aux blocks !");
 							plugin.getScoreBoardManager().getChronometre().stop();
 							plugin.setGameRunning(false);
+							plugin.restartAltar();
 						}
 						return;
 					} else {
 						event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas le bon block !");
+						event.getPlayer().sendMessage(ChatColor.RED + "" + plugin.getAltar().getRandomBlocks().get(index).getTypeId() + " != " + event.getBlock().getTypeId());
+						event.getPlayer().sendMessage(ChatColor.RED + "" + plugin.getAltar().getRandomBlocks().get(index).getData() + " != " + event.getBlock().getData());
 						event.setCancelled(true);
 					}
 				}
@@ -100,5 +102,15 @@ public class LCABPluginListener implements Listener {
 			}
 
 		}
+	}
+
+	private boolean theGoodBlock(final BlockPlaceEvent event, int index) {
+		SpecialCaseBlock specialCaseBlock = new SpecialCaseBlock();
+		for (BlockTypeData block : specialCaseBlock.getSpecialCaseBlock()) {
+			if (plugin.getAltar().getRandomBlocks().get(index).getTypeId() == block.getMaterial().getId()) {
+				return plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId();
+			}
+		}
+		return plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId() && plugin.getAltar().getRandomBlocks().get(index).getData() == event.getBlock().getData();
 	}
 }

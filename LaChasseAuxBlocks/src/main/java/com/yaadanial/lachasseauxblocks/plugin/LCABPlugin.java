@@ -130,6 +130,10 @@ public class LCABPlugin extends JavaPlugin {
 		return this.altar;
 	}
 
+	public void restartAltar() {
+		this.altar = new Altar();
+	}
+
 	public void logToChat(String log) {
 		Bukkit.getServer().broadcastMessage(log);
 	}

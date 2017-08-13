@@ -50,10 +50,10 @@ public class AskingBlock {
 		askingBlock.add(new BlockTypeData(Material.LOG, 1, "Spruce Wood"));									// (ID=17)Spruce Wood
 		askingBlock.add(new BlockTypeData(Material.LOG, 2, "Birch Wood"));									// (ID=17)Birch Wood
 		askingBlock.add(new BlockTypeData(Material.LOG, 3, "Jungle Wood"));									// (ID=17)Jungle Wood
-		askingBlock.add(new BlockTypeData(Material.LEAVES, 0, "Oak Leaves"));								// (ID=18)Oak Leaves
-		askingBlock.add(new BlockTypeData(Material.LEAVES, 1, "Spruce Leaves"));							// (ID=18)Spruce Leaves
-		askingBlock.add(new BlockTypeData(Material.LEAVES, 2, "Birch Leaves"));								// (ID=18)Birch Leaves
-		askingBlock.add(new BlockTypeData(Material.LEAVES, 3, "Jungle Leaves"));							// (ID=18)Jungle Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES, 0, "Oak Leaves"));								// (ID=18)Oak Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES, 1, "Spruce Leaves"));							// (ID=18)Spruce Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES, 2, "Birch Leaves"));								// (ID=18)Birch Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES, 3, "Jungle Leaves"));							// (ID=18)Jungle Leaves
 		askingBlock.add(new BlockTypeData(Material.SPONGE, 0, "Sponge"));									// (ID=19)Sponge
 		askingBlock.add(new BlockTypeData(Material.SPONGE, 1, "Wet Sponge"));								// (ID=19)Wet Sponge
 		askingBlock.add(new BlockTypeData(Material.GLASS, 0, "Glass"));										// (ID=20)Glass
@@ -96,7 +96,7 @@ public class AskingBlock {
 		askingBlock.add(new BlockTypeData(Material.STEP, 7, "Quartz Slab"));								// (ID=44)Quartz Slab
 		askingBlock.add(new BlockTypeData(Material.BRICK, 0, "Brick"));										// (ID=45)Brick
 		askingBlock.add(new BlockTypeData(Material.TNT, 0, "TNT"));											// (ID=46)TNT
-		askingBlock.add(new BlockTypeData(Material.BOOKSHELF, 0, "Bookshelf"	));							// (ID=47)Bookshelf
+		askingBlock.add(new BlockTypeData(Material.BOOKSHELF, 0, "Bookshelf"));								// (ID=47)Bookshelf
 		askingBlock.add(new BlockTypeData(Material.MOSSY_COBBLESTONE, 0, "Mossy CobbleStone"));				// (ID=48)Mossy CobbleStone
 		askingBlock.add(new BlockTypeData(Material.OBSIDIAN, 0, "Obsidian"));								// (ID=49)Obsidian
 		askingBlock.add(new BlockTypeData(Material.TORCH, 0, "Torch"));										// (ID=50)Torch
@@ -183,8 +183,6 @@ public class AskingBlock {
 		askingBlock.add(new BlockTypeData(Material.COBBLE_WALL, 1, "Mossy Cobble Wall"));					// (ID=139)Mossy Cobble Wall
 		askingBlock.add(new BlockTypeData(Material.FLOWER_POT, 0, "Flower Pot"));							// (ID=140)Flower Pot
 		askingBlock.add(new BlockTypeData(Material.ANVIL, 0, "Anvil"));										// (ID=145)Anvil
-		askingBlock.add(new BlockTypeData(Material.ANVIL, 1, "Slightly Damaged Anvil"));					// (ID=145)Slightly Damaged Anvil
-		askingBlock.add(new BlockTypeData(Material.ANVIL, 2, "Very Damaged Anvil"));						// (ID=145)Very Damaged Anvil
 		askingBlock.add(new BlockTypeData(Material.TRAPPED_CHEST, 0, "Trapped Chest"));						// (ID=146)Trapped Chest
 		askingBlock.add(new BlockTypeData(Material.GOLD_PLATE, 0, "Gold Plate"));							// (ID=147)Gold Plate
 		askingBlock.add(new BlockTypeData(Material.IRON_PLATE, 0, "Iron Plate"));							// (ID=148)Iron Plate
@@ -231,8 +229,8 @@ public class AskingBlock {
 		askingBlock.add(new BlockTypeData(Material.STAINED_GLASS_PANE, 13, "Green Stained Glass Pane"));	// (ID=160)Green Stained Glass Pane
 		askingBlock.add(new BlockTypeData(Material.STAINED_GLASS_PANE, 14, "Red Stained Glass Pane"));		// (ID=160)Red Stained Glass Pane
 		askingBlock.add(new BlockTypeData(Material.STAINED_GLASS_PANE, 15, "Black Stained Glass Pane"));	// (ID=160)Black Stained Glass Pane
-		askingBlock.add(new BlockTypeData(Material.LEAVES_2, 0, "Acacia Leaves"));							// (ID=161)Acacia Leaves
-		askingBlock.add(new BlockTypeData(Material.LEAVES_2, 1, "Dark Oak Leaves"));						// (ID=161)Dark Oak Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES_2, 0, "Acacia Leaves"));							// (ID=161)Acacia Leaves
+		//askingBlock.add(new BlockTypeData(Material.LEAVES_2, 1, "Dark Oak Leaves"));						// (ID=161)Dark Oak Leaves
 		askingBlock.add(new BlockTypeData(Material.LOG_2, 0, "Acacia Wood"));								// (ID=162)Acacia Wood
 		askingBlock.add(new BlockTypeData(Material.LOG_2, 1, "Dark Oak Wood"));								// (ID=162)Dark Oak Wood
 		askingBlock.add(new BlockTypeData(Material.ACACIA_STAIRS, 0, "Acacia Stairs"));						// (ID=163)Acacia Stairs
