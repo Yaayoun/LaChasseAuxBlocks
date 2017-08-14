@@ -1,5 +1,9 @@
 package com.yaadanial.lachasseauxblocks.plugin;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -9,7 +13,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.conversations.ConversationAbandonedListener;
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -18,17 +28,21 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Yaadanial
  *
  */
-public class LCABPlugin extends JavaPlugin {
+public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListener {
 
 	private Logger logger = null;
 	private Boolean gameRunning = false;
 	private Altar altar = null;
 	private ScoreBoardManager scoreBoardManager = null;
 	private BlocksFindByPlayer blocksFindByPlayer = null;
+	private List<LCABTeam> teams = new ArrayList<LCABTeam>();
+	private Map<String, ConversationFactory> conversationFactories = new HashMap<String, ConversationFactory>();
+	private LCABPrompts prompts = null;
 
 	@Override
 	public void onEnable() {
 
+		prompts = new LCABPrompts(this);
 		logger = Bukkit.getLogger();
 		logger.info("LCABPlugin loaded!");
 		altar = new Altar();
@@ -42,6 +56,12 @@ public class LCABPlugin extends JavaPlugin {
 		scoreBoardManager.setMatchInfo();
 
 		blocksFindByPlayer = new BlocksFindByPlayer(0);
+
+		conversationFactories.put("teamPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getTNP()).withEscapeSequence("/cancel")
+				.thatExcludesNonPlayersWithMessage("Il faut être un joueur ingame.").withLocalEcho(false).addConversationAbandonedListener(this));
+
+		conversationFactories.put("playerPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getPP()).withEscapeSequence("/cancel")
+				.thatExcludesNonPlayersWithMessage("Il faut être un joueur ingame.").withLocalEcho(false).addConversationAbandonedListener(this));
 	}
 
 	@Override
@@ -63,10 +83,17 @@ public class LCABPlugin extends JavaPlugin {
 				return true;
 			}
 			if (a.length == 0) {
-				pl.sendMessage("Usage : /lcab <start|stop|tp>");
+				pl.sendMessage("Usage : /lcab <start|stop|tp|team>");
 				return true;
 			}
 			if (a[0].equalsIgnoreCase("start")) {
+				if (teams.size() == 0) {
+					for (Player player : getServer().getOnlinePlayers()) {
+						LCABTeam team = new LCABTeam(player.getName(), player.getName(), ChatColor.WHITE, this);
+						team.addPlayer(player);
+						teams.add(team);
+					}
+				}
 				if (!this.gameRunning) {
 					altar.generate(pl);
 
@@ -105,10 +132,36 @@ public class LCABPlugin extends JavaPlugin {
 				}
 				pl.sendMessage("Cette fonctionnalité sera implémentée dans une version ultérieure");
 				return true;
+			} else if (a[0].equalsIgnoreCase("team")) {
+				Inventory inventory = this.getServer().createInventory(pl, 54, "- Teams -");
+				Integer slot = 0;
+				ItemStack itemStack = null;
+				for (LCABTeam team : teams) {
+					itemStack = new ItemStack(Material.BEACON, team.getPlayers().size());
+					ItemMeta itemMeta = itemStack.getItemMeta();
+					itemMeta.setDisplayName(team.getChatColor() + team.getDisplayName());
+					ArrayList<String> lore = new ArrayList<String>();
+					for (Player player : team.getPlayers()) {
+						lore.add("- " + player.getDisplayName());
+					}
+					itemMeta.setLore(lore);
+					itemStack.setItemMeta(itemMeta);
+					inventory.setItem(slot, itemStack);
+					slot++;
+				}
+
+				ItemStack itemStack2 = new ItemStack(Material.DIAMOND);
+				ItemMeta itemMeta2 = itemStack2.getItemMeta();
+				itemMeta2.setDisplayName(ChatColor.AQUA + "" + ChatColor.ITALIC + "Créer une team");
+				itemStack2.setItemMeta(itemMeta2);
+				inventory.setItem(53, itemStack2);
+
+				pl.openInventory(inventory);
+				return true;
 			} else if (a[0].equalsIgnoreCase("debug")) {
-				AskingBlock ab = new AskingBlock();
+				AskingBlock askingBlock = new AskingBlock();
 				int i = 0;
-				for (BlockTypeData blockTypeData : ab.getAskingBlock()) {
+				for (BlockTypeData blockTypeData : askingBlock.getAskingBlock()) {
 					Block block = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + ++i, pl.getLocation().getBlockY() - 1, pl.getLocation().getBlockZ());
 					block.setType(Material.STONE);
 					block.setData((byte) 6);
@@ -118,6 +171,14 @@ public class LCABPlugin extends JavaPlugin {
 				}
 				return true;
 			}
+		}
+		return false;
+	}
+
+	public boolean createTeam(String name, ChatColor color) {
+		if (teams.size() <= 50) {
+			teams.add(new LCABTeam(name, name, color, this));
+			return true;
 		}
 		return false;
 	}
@@ -160,5 +221,42 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void setGameRunning(Boolean gameRunning) {
 		this.gameRunning = gameRunning;
+	}
+
+	public List<LCABTeam> getTeams() {
+		return teams;
+	}
+
+	public void setTeams(List<LCABTeam> teams) {
+		this.teams = teams;
+	}
+
+	public LCABTeam getTeam(String name) {
+		for (LCABTeam team : teams) {
+			if (team.getName().equalsIgnoreCase(name))
+				return team;
+		}
+		return null;
+	}
+
+	@Override
+	public void conversationAbandoned(ConversationAbandonedEvent abandonedEvent) {
+		if (!abandonedEvent.gracefulExit()) {
+			abandonedEvent.getContext().getForWhom().sendRawMessage(ChatColor.RED + "Abandonné par " + abandonedEvent.getCanceller().getClass().getName());
+		}
+	}
+
+	public LCABTeam getTeamForPlayer(Player p) {
+		for (LCABTeam team : teams) {
+			if (team.getPlayers().contains(p))
+				return team;
+		}
+		return null;
+	}
+
+	public ConversationFactory getConversationFactory(String string) {
+		if (conversationFactories.containsKey(string))
+			return conversationFactories.get(string);
+		return null;
 	}
 }

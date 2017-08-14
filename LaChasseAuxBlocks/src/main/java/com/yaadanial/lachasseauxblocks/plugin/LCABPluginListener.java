@@ -3,13 +3,17 @@ package com.yaadanial.lachasseauxblocks.plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -101,6 +105,24 @@ public class LCABPluginListener implements Listener {
 				index++;
 			}
 
+		}
+	}
+
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getInventory().getName().equals("- Teams -")) {
+			Player player = (Player) event.getWhoClicked();
+			event.setCancelled(true);
+			if (event.getCurrentItem().getType() == Material.DIAMOND) {
+				player.closeInventory();
+				plugin.getConversationFactory("teamPrompt").buildConversation(player).begin();
+			} else if (event.getCurrentItem().getType() == Material.BEACON) {
+				player.closeInventory();
+				Conversation conversation = plugin.getConversationFactory("playerPrompt").buildConversation(player);
+				conversation.getContext().setSessionData("nomTeam", ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));
+				conversation.getContext().setSessionData("color", plugin.getTeam(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())).getChatColor());
+				conversation.begin();
+			}
 		}
 	}
 
