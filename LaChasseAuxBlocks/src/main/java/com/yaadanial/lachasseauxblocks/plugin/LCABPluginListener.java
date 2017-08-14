@@ -118,10 +118,52 @@ public class LCABPluginListener implements Listener {
 				plugin.getConversationFactory("teamPrompt").buildConversation(player).begin();
 			} else if (event.getCurrentItem().getType() == Material.BEACON) {
 				player.closeInventory();
-				Conversation conversation = plugin.getConversationFactory("playerPrompt").buildConversation(player);
-				conversation.getContext().setSessionData("nomTeam", ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));
-				conversation.getContext().setSessionData("color", plugin.getTeam(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())).getChatColor());
-				conversation.begin();
+				plugin.openWindowTeam(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()), player);
+			}
+		} else {
+			for (LCABTeam team : plugin.getTeams()) {
+				if (event.getInventory().getName().equals("- " + team.getDisplayName() + " -")) {
+					Player player = (Player) event.getWhoClicked();
+					event.setCancelled(true);
+					if (event.getCurrentItem().getType() == Material.DIAMOND) {
+						player.closeInventory();
+						Conversation conversation = plugin.getConversationFactory("playerPrompt").buildConversation(player);
+						conversation.getContext().setSessionData("nomTeam", team.getDisplayName());
+						conversation.getContext().setSessionData("color", team.getChatColor());
+						conversation.begin();
+					} else if (event.getCurrentItem().getType() == Material.REDSTONE_BLOCK) {
+						player.closeInventory();
+						plugin.openWindowDeleteTeam(team.getDisplayName(), player);
+					} else if (event.getCurrentItem().getType() == Material.BEACON) {
+						player.closeInventory();
+						plugin.openWindowDeletePlayer(team.getDisplayName(), ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()), player);
+					}
+					return;
+				} else if (event.getInventory().getName().equals("- Êtes-vous sûr de vouloir supprimer la team " + team.getDisplayName() + " -")) {
+					Player player = (Player) event.getWhoClicked();
+					event.setCancelled(true);
+					if (event.getCurrentItem().getType() == Material.REDSTONE_BLOCK) {
+						player.closeInventory();
+					} else if (event.getCurrentItem().getType() == Material.DIAMOND) {
+						player.closeInventory();
+						plugin.deleteATeam(team);
+					}
+					return;
+				} else {
+					for (Player playerToDelete : team.getPlayers()) {
+						if (event.getInventory().getName().equals("- Êtes-vous sûr de vouloir supprimer " + playerToDelete.getDisplayName() + " de la team " + team.getDisplayName() + " -")) {
+							Player player = (Player) event.getWhoClicked();
+							event.setCancelled(true);
+							if (event.getCurrentItem().getType() == Material.REDSTONE_BLOCK) {
+								player.closeInventory();
+							} else if (event.getCurrentItem().getType() == Material.DIAMOND) {
+								player.closeInventory();
+								plugin.deleteAPlayerToATeam(team, playerToDelete);
+							}
+							return;
+						}
+					}
+				}
 			}
 		}
 	}

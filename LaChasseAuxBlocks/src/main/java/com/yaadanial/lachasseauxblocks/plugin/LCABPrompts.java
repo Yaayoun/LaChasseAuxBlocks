@@ -38,6 +38,12 @@ public class LCABPrompts {
 				context.getForWhom().sendRawMessage(ChatColor.RED + "Le nom de la team doit faire 16 caractères maximum.");
 				return this;
 			}
+			for (LCABTeam team : plugin.getTeams()) {
+				if (team.getDisplayName().equals(input)) {
+					context.getForWhom().sendRawMessage(ChatColor.DARK_RED + " la team " + ((ChatColor) team.getChatColor()) + team.getName() + ChatColor.DARK_RED + " existe déjà.");
+					return this;
+				}
+			}
 			context.setSessionData("nomTeam", input);
 			return new TeamColorPrompt();
 		}
@@ -113,7 +119,7 @@ public class LCABPrompts {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, Player input) {
 			plugin.getTeam((String) context.getSessionData("nomTeam")).addPlayer(input);
-			context.getForWhom().sendRawMessage(ChatColor.GREEN + input.getName() + ChatColor.DARK_GREEN + " a été ajouté à l'équipe " + ((ChatColor) context.getSessionData("color"))
+			context.getForWhom().sendRawMessage(ChatColor.GREEN + input.getName() + ChatColor.DARK_GREEN + " a été ajouté à la team " + ((ChatColor) context.getSessionData("color"))
 					+ context.getSessionData("nomTeam") + ChatColor.DARK_GREEN + ".");
 			return Prompt.END_OF_CONVERSATION;
 		}
@@ -121,15 +127,15 @@ public class LCABPrompts {
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
 			for (LCABTeam team : plugin.getTeams()) {
-				for (Player player : team.getPlayers())
+				for (Player player : team.getPlayers()) {
 					if (plugin.getServer().getPlayer(input) != null && player.equals(plugin.getServer().getPlayer(input))) {
 						context.getForWhom().sendRawMessage(
-								ChatColor.RED + player.getName() + ChatColor.DARK_RED + " est déjà dans l'équipe " + ((ChatColor) team.getChatColor()) + team.getName() + ChatColor.DARK_RED + ".");
+								ChatColor.RED + player.getName() + ChatColor.DARK_RED + " est déjà dans la team " + ((ChatColor) team.getChatColor()) + team.getName() + ChatColor.DARK_RED + ".");
 						return false;
 					}
+				}
 			}
 			return plugin.getServer().getPlayer(input) != null;
-
 		}
 
 	}

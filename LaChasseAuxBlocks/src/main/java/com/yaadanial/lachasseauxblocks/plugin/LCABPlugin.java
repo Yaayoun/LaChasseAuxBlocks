@@ -259,4 +259,91 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 			return conversationFactories.get(string);
 		return null;
 	}
+
+	public void openWindowTeam(String teamName, Player player) {
+		LCABTeam team = findTeam(teamName);
+		Inventory inventory = this.getServer().createInventory(player, 54, "- " + team.getDisplayName() + " -");
+		Integer slot = 0;
+		ItemStack itemStack = null;
+		for (Player playerInTeam : team.getPlayers()) {
+			itemStack = new ItemStack(Material.BEACON, 1);
+			ItemMeta itemMeta = itemStack.getItemMeta();
+			itemMeta.setDisplayName(team.getChatColor() + playerInTeam.getDisplayName());
+			ArrayList<String> lore = new ArrayList<String>();
+			lore.add("Cliquer pour supprimer ce joueur");
+			itemMeta.setLore(lore);
+			itemStack.setItemMeta(itemMeta);
+			inventory.setItem(slot, itemStack);
+			slot++;
+		}
+
+		ItemStack itemStack2 = new ItemStack(Material.REDSTONE_BLOCK);
+		ItemMeta itemMeta2 = itemStack2.getItemMeta();
+		itemMeta2.setDisplayName(ChatColor.DARK_RED + "Supprimer la team");
+		itemStack2.setItemMeta(itemMeta2);
+		inventory.setItem(52, itemStack2);
+
+		ItemStack itemStack3 = new ItemStack(Material.DIAMOND);
+		ItemMeta itemMeta3 = itemStack3.getItemMeta();
+		itemMeta3.setDisplayName(ChatColor.AQUA + "" + ChatColor.ITALIC + "Ajouter un joueur");
+		itemStack3.setItemMeta(itemMeta3);
+		inventory.setItem(53, itemStack3);
+
+		player.openInventory(inventory);
+	}
+
+	public void openWindowDeletePlayer(String teamName, String playerToDelete, Player player) {
+		Inventory inventory = this.getServer().createInventory(player, 9, "- Êtes-vous sûr de vouloir supprimer " + playerToDelete + " de la team " + teamName + " -");
+		ItemStack itemStack = null;
+
+		itemStack = new ItemStack(Material.REDSTONE_BLOCK, 1);
+		ItemMeta itemMeta = itemStack.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.DARK_RED + "Non");
+		itemStack.setItemMeta(itemMeta);
+		inventory.setItem(0, itemStack);
+
+		ItemStack itemStack2 = new ItemStack(Material.DIAMOND);
+		ItemMeta itemMeta2 = itemStack2.getItemMeta();
+		itemMeta2.setDisplayName(ChatColor.DARK_GREEN + "Oui");
+		itemStack2.setItemMeta(itemMeta2);
+		inventory.setItem(1, itemStack2);
+
+		player.openInventory(inventory);
+	}
+
+	public void openWindowDeleteTeam(String teamName, Player player) {
+		Inventory inventory = this.getServer().createInventory(player, 9, "- Êtes-vous sûr de vouloir supprimer la team " + teamName + " -");
+		ItemStack itemStack = null;
+
+		itemStack = new ItemStack(Material.REDSTONE_BLOCK, 1);
+		ItemMeta itemMeta = itemStack.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.DARK_RED + "Non");
+		itemStack.setItemMeta(itemMeta);
+		inventory.setItem(0, itemStack);
+
+		ItemStack itemStack2 = new ItemStack(Material.DIAMOND);
+		ItemMeta itemMeta2 = itemStack2.getItemMeta();
+		itemMeta2.setDisplayName(ChatColor.DARK_GREEN + "Oui");
+		itemStack2.setItemMeta(itemMeta2);
+		inventory.setItem(1, itemStack2);
+
+		player.openInventory(inventory);
+	}
+
+	public void deleteAPlayerToATeam(LCABTeam team, Player player) {
+		teams.get(teams.indexOf(team)).getPlayers().remove(player);
+	}
+
+	private LCABTeam findTeam(String teamName) {
+		for (LCABTeam team : teams) {
+			if (team.getDisplayName().equals(teamName)) {
+				return team;
+			}
+		}
+		return null;
+	}
+
+	public void deleteATeam(LCABTeam team) {
+		teams.remove(team);
+	}
 }
