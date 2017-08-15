@@ -287,6 +287,15 @@ public class AskingBlock {
 		//@formatter:on
 	}
 
+	public BlockTypeData findBlock(Material material, byte data) {
+		for (BlockTypeData block : askingBlock) {
+			if (block.getMaterial().equals(material) && ((byte) (int) block.getData()) == data) {
+				return block;
+			}
+		}
+		return null;
+	}
+
 	public List<BlockTypeData> getAskingBlock() {
 		return askingBlock;
 	}

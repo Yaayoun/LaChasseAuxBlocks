@@ -29,7 +29,7 @@ public class LCABPrompts {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return ChatColor.GRAY + "Veuillez entrer un nom pour la team. /cancel pour annuler.";
+			return ChatColor.GRAY + "Veuillez entrer un nom pour la team. !cancel pour annuler.";
 		}
 
 		@Override
@@ -83,7 +83,7 @@ public class LCABPrompts {
 				colorsString += string + ChatColor.WHITE + ", ";
 			}
 			colorsString = colorsString.substring(0, colorsString.length() - 2);
-			return ChatColor.GRAY + "Veuillez entrer une couleur pour la team. /cancel pour annuler.\n" + colorsString;
+			return ChatColor.GRAY + "Veuillez entrer une couleur pour la team. !cancel pour annuler.\n" + colorsString;
 		}
 
 		@Override
@@ -113,7 +113,8 @@ public class LCABPrompts {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return ChatColor.GRAY + "Entrez le nom du joueur à ajouter dans la team " + ((ChatColor) context.getSessionData("color")) + context.getSessionData("nomTeam") + ChatColor.WHITE + ".";
+			return ChatColor.GRAY + "Entrez le nom du joueur à ajouter dans la team " + ((ChatColor) context.getSessionData("color")) + context.getSessionData("nomTeam") + ChatColor.GRAY
+					+ ". !cancel pour annuler.\n";
 		}
 
 		@Override

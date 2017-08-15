@@ -2,7 +2,9 @@ package com.yaadanial.lachasseauxblocks.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,40 +52,47 @@ public class ScoreBoardManager {
 	 * Création du scoreboard dans la sidebar
 	 */
 	private void createOrRegenerateSidebar() {
-		Objective obj = null;
+		Objective objective = null;
 		try {
-			obj = scoreBoard.getObjective(name);
-			obj.setDisplaySlot(null);
-			obj.unregister();
+			objective = scoreBoard.getObjective(name);
+			objective.setDisplaySlot(null);
+			objective.unregister();
 		} catch (Exception e) {
 
 		}
-		Random r = new Random();
-		name = "LCAB" + r.nextInt(10000000);
-		obj = scoreBoard.registerNewObjective(name, "dummy");
-		obj = scoreBoard.getObjective(name);
+		Random random = new Random();
+		name = "LCAB" + random.nextInt(10000000);
+		objective = scoreBoard.registerNewObjective(name, "dummy");
+		objective = scoreBoard.getObjective(name);
 
-		obj.setDisplayName(this.getScoreboardName());
-		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + formatter.format(chronometre.getHours()) + ChatColor.GRAY + ":" + ChatColor.WHITE + formatter.format(chronometre.getMinutes())
+		objective.setDisplayName(this.getScoreboardName());
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + formatter.format(chronometre.getHours()) + ChatColor.GRAY + ":" + ChatColor.WHITE + formatter.format(chronometre.getMinutes())
 				+ ChatColor.GRAY + ":" + ChatColor.WHITE + formatter.format(chronometre.getSeconds()))).setScore(1);
-		obj.getScore(Bukkit.getOfflinePlayer("")).setScore(2);
+		objective.getScore(Bukkit.getOfflinePlayer("")).setScore(2);
 		int index = 3;
-		for (Player player : plugin.getServer().getOnlinePlayers()) {
-			obj.getScore(Bukkit.getOfflinePlayer(ChatColor.GRAY + player.getName() + " : " + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName()).toString()
-					+ ChatColor.GRAY + "/" + ChatColor.WHITE + plugin.getBlocksFindByPlayer().getNbblocksFindMax())).setScore(index++);
+		Set<String> keys = plugin.getBlocksFindByTeam().getBlocksFindByTeam().keySet();
+		Iterator<String> iterator = keys.iterator();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			LCABTeam team = plugin.findTeam(key);
+			if (team != null) {
+				objective.getScore(Bukkit.getOfflinePlayer(team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " : " + ChatColor.WHITE
+						+ plugin.getBlocksFindByTeam().getBlocksFindByTeam().get(team.getDisplayName()).toString() + ChatColor.GRAY + "/" + ChatColor.WHITE
+						+ plugin.getBlocksFindByTeam().getNbblocksFindMax())).setScore(index++);
+			}
 		}
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + "0" + ChatColor.GRAY + " teams")).setScore(index++);
-		obj.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + Bukkit.getServer().getOnlinePlayers().size() + ChatColor.GRAY + " joueurs")).setScore(index++);
+		objective.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + plugin.getTeams().size() + ChatColor.GRAY + " teams")).setScore(index++);
+		objective.getScore(Bukkit.getOfflinePlayer(ChatColor.WHITE + "" + Bukkit.getServer().getOnlinePlayers().size() + ChatColor.GRAY + " joueurs")).setScore(index++);
 	}
 
 	/**
 	 * Création du scoreboard dans la playerList
 	 */
 	private void createPlayerList() {
-		Objective obj = scoreBoard.registerNewObjective("BlocksFind", "dummy");
-		obj.setDisplayName("BlocksFind");
-		obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+		Objective objective = scoreBoard.registerNewObjective("BlocksFind", "dummy");
+		objective.setDisplayName("BlocksFind");
+		objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 	}
 
 	public String getName() {
@@ -116,9 +125,18 @@ public class ScoreBoardManager {
 	}
 
 	public void updatePlayerListName(Player player) {
+		for (LCABTeam team : plugin.getTeams()) {
+			for (Player playerInTeam : team.getPlayers()) {
+				if (playerInTeam.equals(player)) {
+					Integer blocksFind = (int) plugin.getBlocksFindByTeam().getBlocksFindByTeam().get(team.getDisplayName());
+					scoreBoard.getObjective("BlocksFind").getScore(player).setScore(blocksFind);
+					player.setScoreboard(scoreBoard);
+					return;
+				}
+			}
+		}
+		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(0);
 		player.setScoreboard(scoreBoard);
-		Integer blocksFind = (int) plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(player.getName());
-		scoreBoard.getObjective("BlocksFind").getScore(player).setScore(blocksFind);
 	}
 
 	public void addToScoreboard(Player player) {
@@ -127,9 +145,11 @@ public class ScoreBoardManager {
 		this.updatePlayerListName(player);
 	}
 
-	public void setNbBlocksFind(Player entity, int i) {
-		entity.setScoreboard(scoreBoard);
-		scoreBoard.getObjective("BlocksFind").getScore(entity).setScore(i);
+	public void setNbBlocksFind(LCABTeam team, int i) {
+		for (Player player : team.getPlayers()) {
+			scoreBoard.getObjective("BlocksFind").getScore(player).setScore(i);
+			player.setScoreboard(scoreBoard);
+		}
 	}
 
 	/**

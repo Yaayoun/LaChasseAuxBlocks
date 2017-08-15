@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -32,12 +33,12 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 
 	private Logger logger = null;
 	private Boolean gameRunning = false;
-	private Altar altar = null;
 	private ScoreBoardManager scoreBoardManager = null;
-	private BlocksFindByPlayer blocksFindByPlayer = null;
+	private BlocksFindByTeam blocksFindByTeam = null;
 	private List<LCABTeam> teams = new ArrayList<LCABTeam>();
 	private Map<String, ConversationFactory> conversationFactories = new HashMap<String, ConversationFactory>();
 	private LCABPrompts prompts = null;
+	private AskingBlock askingBlocks = null;
 
 	@Override
 	public void onEnable() {
@@ -45,22 +46,23 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 		prompts = new LCABPrompts(this);
 		logger = Bukkit.getLogger();
 		logger.info("LCABPlugin loaded!");
-		altar = new Altar();
 		getServer().getWorlds().get(0).setTime(6000L);
 		getServer().getWorlds().get(0).setStorm(false);
 		getServer().getWorlds().get(0).setDifficulty(Difficulty.HARD);
 
 		getServer().getPluginManager().registerEvents(new LCABPluginListener(this), this);
 
+		blocksFindByTeam = new BlocksFindByTeam(0);
+
+		askingBlocks = new AskingBlock();
+
 		scoreBoardManager = new ScoreBoardManager(this);
 		scoreBoardManager.setMatchInfo();
 
-		blocksFindByPlayer = new BlocksFindByPlayer(0);
-
-		conversationFactories.put("teamPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getTNP()).withEscapeSequence("/cancel")
+		conversationFactories.put("teamPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getTNP()).withEscapeSequence("!cancel")
 				.thatExcludesNonPlayersWithMessage("Il faut être un joueur ingame.").withLocalEcho(false).addConversationAbandonedListener(this));
 
-		conversationFactories.put("playerPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getPP()).withEscapeSequence("/cancel")
+		conversationFactories.put("playerPrompt", new ConversationFactory(this).withModality(true).withFirstPrompt(prompts.getPP()).withEscapeSequence("!cancel")
 				.thatExcludesNonPlayersWithMessage("Il faut être un joueur ingame.").withLocalEcho(false).addConversationAbandonedListener(this));
 	}
 
@@ -87,24 +89,30 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 				return true;
 			}
 			if (a[0].equalsIgnoreCase("start")) {
-				if (teams.size() == 0) {
-					for (Player player : getServer().getOnlinePlayers()) {
-						LCABTeam team = new LCABTeam(player.getName(), player.getName(), ChatColor.WHITE, this);
-						team.addPlayer(player);
-						teams.add(team);
-					}
-				}
 				if (!this.gameRunning) {
-					altar.generate(pl);
-
-					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
 					scoreBoardManager.restartChronometre();
 					scoreBoardManager.getChronometre().run();
-					blocksFindByPlayer = new BlocksFindByPlayer(2);
-					for (Player player : getServer().getOnlinePlayers()) {
-						blocksFindByPlayer.addBlocksFindByPlayer(player.getName(), 0);
+					blocksFindByTeam = new BlocksFindByTeam(2);
+					if (teams.size() == 0) {
+						for (Player player : getServer().getOnlinePlayers()) {
+							LCABTeam team = new LCABTeam(player.getName(), player.getName(), ChatColor.WHITE, teams.size(), this);
+							team.addPlayer(player);
+							teams.add(team);
+						}
 					}
+
+					Random random = new Random();
+					List<BlockTypeData> randomBlocks = new ArrayList<BlockTypeData>();
+					int index = random.nextInt(askingBlocks.getAskingBlock().size());
+					randomBlocks.add(askingBlocks.getAskingBlock().get(index));
+					index = random.nextInt(askingBlocks.getAskingBlock().size());
+					randomBlocks.add(askingBlocks.getAskingBlock().get(index));
+					for (LCABTeam team : teams) {
+						blocksFindByTeam.addBlocksFindByTeam(team.getDisplayName(), 0);
+						team.getAltar().generate(randomBlocks);
+					}
+					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
@@ -118,7 +126,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				scoreBoardManager.getChronometre().stop();
 				this.gameRunning = false;
-				altar = new Altar();
+				restartAltar();
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -177,7 +185,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 
 	public boolean createTeam(String name, ChatColor color) {
 		if (teams.size() <= 50) {
-			teams.add(new LCABTeam(name, name, color, this));
+			teams.add(new LCABTeam(name, name, color, teams.size(), this));
 			return true;
 		}
 		return false;
@@ -187,12 +195,18 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 		return this.gameRunning;
 	}
 
-	public Altar getAltar() {
-		return this.altar;
+	public void restartAltar() {
+		for (LCABTeam team : teams) {
+			team.setAltar(new Altar(team, this));
+		}
 	}
 
-	public void restartAltar() {
-		this.altar = new Altar();
+	public List<Block> getAltars() {
+		List<Block> altars = new ArrayList<>();
+		for (LCABTeam team : teams) {
+			altars.addAll(team.getAltar().getBlocks());
+		}
+		return altars;
 	}
 
 	public void logToChat(String log) {
@@ -207,12 +221,12 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 		this.scoreBoardManager = scoreBoardManager;
 	}
 
-	public BlocksFindByPlayer getBlocksFindByPlayer() {
-		return blocksFindByPlayer;
+	public BlocksFindByTeam getBlocksFindByTeam() {
+		return blocksFindByTeam;
 	}
 
-	public void setBlocksFindByPlayer(BlocksFindByPlayer blocksFindByPlayer) {
-		this.blocksFindByPlayer = blocksFindByPlayer;
+	public void setBlocksFindByTeam(BlocksFindByTeam blocksFindByTeam) {
+		this.blocksFindByTeam = blocksFindByTeam;
 	}
 
 	public Boolean getGameRunning() {
@@ -242,7 +256,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 	@Override
 	public void conversationAbandoned(ConversationAbandonedEvent abandonedEvent) {
 		if (!abandonedEvent.gracefulExit()) {
-			abandonedEvent.getContext().getForWhom().sendRawMessage(ChatColor.RED + "Abandonné par " + abandonedEvent.getCanceller().getClass().getName());
+			abandonedEvent.getContext().getForWhom().sendRawMessage(ChatColor.RED + "Conversation abandonnée !");
 		}
 	}
 
@@ -334,7 +348,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 		teams.get(teams.indexOf(team)).getPlayers().remove(player);
 	}
 
-	private LCABTeam findTeam(String teamName) {
+	public LCABTeam findTeam(String teamName) {
 		for (LCABTeam team : teams) {
 			if (team.getDisplayName().equals(teamName)) {
 				return team;
@@ -345,5 +359,13 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 
 	public void deleteATeam(LCABTeam team) {
 		teams.remove(team);
+	}
+
+	public AskingBlock getAskingBlocks() {
+		return askingBlocks;
+	}
+
+	public void setAskingBlocks(AskingBlock askingBlocks) {
+		this.askingBlocks = askingBlocks;
 	}
 }

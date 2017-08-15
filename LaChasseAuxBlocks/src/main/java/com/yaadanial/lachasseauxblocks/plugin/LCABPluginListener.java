@@ -36,7 +36,6 @@ public class LCABPluginListener implements Listener {
 		if (!this.plugin.isGameRunning()) {
 			event.getPlayer().setGameMode(GameMode.CREATIVE);
 		}
-		plugin.getBlocksFindByPlayer().addBlocksFindByPlayer(event.getPlayer().getName(), 0);
 		plugin.getScoreBoardManager().addToScoreboard(event.getPlayer());
 		Bukkit.getScheduler().runTaskLater(this.plugin, new BukkitRunnable() {
 
@@ -49,14 +48,14 @@ public class LCABPluginListener implements Listener {
 
 	@EventHandler
 	public void onBlockBreakEvent(final BlockBreakEvent event) {
-		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
+		if (this.plugin.isGameRunning() && plugin.getAltars().contains(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onBlockBurnEvent(final BlockBurnEvent event) {
-		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
+		if (this.plugin.isGameRunning() && plugin.getAltars().contains(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}
@@ -64,7 +63,7 @@ public class LCABPluginListener implements Listener {
 	@EventHandler
 	public void onBlockExplodeEvent(final EntityExplodeEvent event) {
 		if (this.plugin.isGameRunning()) {
-			for (Block blockAltar : plugin.getAltar().getBlocks()) {
+			for (Block blockAltar : plugin.getAltars()) {
 				for (Block blockExplode : event.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
 						event.setCancelled(true);
@@ -77,34 +76,43 @@ public class LCABPluginListener implements Listener {
 
 	@EventHandler
 	public void onBlockPlaceEvent(final BlockPlaceEvent event) {
-		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
+		if (this.plugin.isGameRunning() && plugin.getAltars().contains(event.getBlock())) {
 			event.setCancelled(true);
-		} else if (this.plugin.isGameRunning() && plugin.getAltar().getPlacingBlocks().contains(event.getBlock())) {
-			int index = 0;
-			for (Block placingBlock : plugin.getAltar().getPlacingBlocks()) {
-				//si le block est dans un emplacement à block
-				if (placingBlock.getX() == event.getBlock().getX() && placingBlock.getY() == event.getBlock().getY() && placingBlock.getZ() == event.getBlock().getZ()) {
-					//si c'est le bon Block
-					if (theGoodBlock(event, index)) {
-						plugin.getAltar().getBlocks().add(event.getBlock());
-						plugin.getBlocksFindByPlayer().addPointToPlayer(plugin.getAltar().getPlayer().getName());
-						if (plugin.getBlocksFindByPlayer().getBlocksFindByPlayer().get(plugin.getAltar().getPlayer().getName()) >= plugin.getBlocksFindByPlayer().getNbblocksFindMax()) {
-							plugin.logToChat(ChatColor.GREEN + plugin.getAltar().getPlayer().getName() + " a gagné cette chasse aux blocks !");
-							plugin.getScoreBoardManager().getChronometre().stop();
-							plugin.setGameRunning(false);
-							plugin.restartAltar();
+		} else if (this.plugin.isGameRunning()) {
+			for (LCABTeam team : plugin.getTeams()) {
+				if (team.getAltar().getPlacingBlocks().contains(event.getBlock())) {
+					int index = 0;
+					for (Block placingBlock : team.getAltar().getPlacingBlocks()) {
+						//si le block est dans un emplacement à block
+						if (placingBlock.getX() == event.getBlock().getX() && placingBlock.getY() == event.getBlock().getY() && placingBlock.getZ() == event.getBlock().getZ()) {
+							for (Player player : team.getPlayers()) {
+								//si c'est le joueur est dans la team
+								if (event.getPlayer().equals(player)) {
+									if (theGoodBlock(event, team, index)) {
+										//si c'est le bon Block
+										team.getAltar().getBlocks().add(event.getBlock());
+										plugin.getBlocksFindByTeam().addPointToTeam(team.getDisplayName());
+										if (plugin.getBlocksFindByTeam().getBlocksFindByTeam().get(team.getDisplayName()) >= plugin.getBlocksFindByTeam().getNbblocksFindMax()) {
+											plugin.logToChat(team.getChatColor() + team.getDisplayName() + ChatColor.DARK_GREEN + " a gagné cette chasse aux blocks !");
+											plugin.getScoreBoardManager().getChronometre().stop();
+											plugin.setGameRunning(false);
+											plugin.restartAltar();
+										}
+									} else {
+										event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas le bon block !");
+										event.setCancelled(true);
+									}
+									return;
+								}
+							}
+							event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas l'Autel de votre Team !");
+							event.setCancelled(true);
+							return;
 						}
-						return;
-					} else {
-						event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas le bon block !");
-						event.getPlayer().sendMessage(ChatColor.RED + "" + plugin.getAltar().getRandomBlocks().get(index).getTypeId() + " != " + event.getBlock().getTypeId());
-						event.getPlayer().sendMessage(ChatColor.RED + "" + plugin.getAltar().getRandomBlocks().get(index).getData() + " != " + event.getBlock().getData());
-						event.setCancelled(true);
+						index++;
 					}
 				}
-				index++;
 			}
-
 		}
 	}
 
@@ -147,6 +155,7 @@ public class LCABPluginListener implements Listener {
 					} else if (event.getCurrentItem().getType() == Material.DIAMOND) {
 						player.closeInventory();
 						plugin.deleteATeam(team);
+						player.sendMessage(ChatColor.GREEN + "la team " + team.getChatColor() + team.getDisplayName() + ChatColor.GREEN + " a bien été supprimé !");
 					}
 					return;
 				} else {
@@ -159,6 +168,8 @@ public class LCABPluginListener implements Listener {
 							} else if (event.getCurrentItem().getType() == Material.DIAMOND) {
 								player.closeInventory();
 								plugin.deleteAPlayerToATeam(team, playerToDelete);
+								player.sendMessage(ChatColor.GREEN + "le joueur " + ChatColor.DARK_GREEN + playerToDelete.getDisplayName() + ChatColor.GREEN + " a bien été supprimé de la team "
+										+ team.getChatColor() + team.getDisplayName() + ChatColor.GREEN + " !");
 							}
 							return;
 						}
@@ -168,13 +179,14 @@ public class LCABPluginListener implements Listener {
 		}
 	}
 
-	private boolean theGoodBlock(final BlockPlaceEvent event, int index) {
+	private boolean theGoodBlock(final BlockPlaceEvent event, LCABTeam team, int index) {
 		SpecialCaseBlock specialCaseBlock = new SpecialCaseBlock();
 		for (BlockTypeData block : specialCaseBlock.getSpecialCaseBlock()) {
-			if (plugin.getAltar().getRandomBlocks().get(index).getTypeId() == block.getMaterial().getId()) {
-				return plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId();
+			if (team.getAltar().getRandomBlocks().get(index).getMaterial().getId() == block.getMaterial().getId()) {
+				return team.getAltar().getRandomBlocks().get(index).getMaterial().getId() == event.getBlock().getTypeId();
 			}
 		}
-		return plugin.getAltar().getRandomBlocks().get(index).getTypeId() == event.getBlock().getTypeId() && plugin.getAltar().getRandomBlocks().get(index).getData() == event.getBlock().getData();
+		return team.getAltar().getRandomBlocks().get(index).getMaterial().getId() == event.getBlock().getTypeId()
+				&& team.getAltar().getRandomBlocks().get(index).getData() == event.getBlock().getData();
 	}
 }

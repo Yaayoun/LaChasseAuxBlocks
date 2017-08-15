@@ -15,17 +15,22 @@ import org.bukkit.scoreboard.Team;
  *
  */
 public class LCABTeam {
+
 	private String name;
 	private String displayName;
 	private ChatColor color;
 	private LCABPlugin plugin;
+	private int numberOfTeam;
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private Altar altar = null;
 
-	public LCABTeam(String name, String displayName, ChatColor color, LCABPlugin plugin) {
+	public LCABTeam(String name, String displayName, ChatColor color, int numberOfTeam, LCABPlugin plugin) {
 		this.name = name;
 		this.displayName = displayName;
 		this.color = color;
+		this.numberOfTeam = numberOfTeam;
 		this.plugin = plugin;
+		this.altar = new Altar(this, plugin);
 
 		Scoreboard scoreboard = this.plugin.getScoreBoardManager().getScoreBoard();
 		scoreboard.registerNewTeam(this.name);
@@ -61,5 +66,21 @@ public class LCABTeam {
 
 	public ChatColor getChatColor() {
 		return color;
+	}
+
+	public Altar getAltar() {
+		return altar;
+	}
+
+	public void setAltar(Altar altar) {
+		this.altar = altar;
+	}
+
+	public int getNumberOfTeam() {
+		return numberOfTeam;
+	}
+
+	public void setNumberOfTeam(int numberOfTeam) {
+		this.numberOfTeam = numberOfTeam;
 	}
 }
