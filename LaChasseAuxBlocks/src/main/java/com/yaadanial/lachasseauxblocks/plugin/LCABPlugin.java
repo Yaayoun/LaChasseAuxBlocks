@@ -109,6 +109,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 					randomBlocks.add(askingBlocks.getAskingBlock().get(index));
 					index = random.nextInt(askingBlocks.getAskingBlock().size());
 					randomBlocks.add(askingBlocks.getAskingBlock().get(index));
+					restartAltar();
 					for (LCABTeam team : teams) {
 						blocksFindByTeam.addBlocksFindByTeam(team.getDisplayName(), 0);
 						team.getAltar().generate(randomBlocks);
@@ -128,7 +129,6 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				scoreBoardManager.getChronometre().stop();
 				this.gameRunning = false;
-				restartAltar();
 				setAllPlayersIntoSpectate();
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {

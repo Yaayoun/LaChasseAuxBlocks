@@ -94,7 +94,6 @@ public class LCABPluginListener implements Listener {
 											plugin.logToChat(team.getChatColor() + team.getDisplayName() + ChatColor.DARK_GREEN + " a gagné cette chasse aux blocks !");
 											plugin.getScoreBoardManager().getChronometre().stop();
 											plugin.setGameRunning(false);
-											plugin.restartAltar();
 											plugin.setAllPlayersIntoSpectate();
 										}
 									} else {

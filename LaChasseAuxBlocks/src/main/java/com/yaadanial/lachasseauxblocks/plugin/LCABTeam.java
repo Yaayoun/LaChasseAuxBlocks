@@ -68,7 +68,8 @@ public class LCABTeam {
 	}
 
 	public void initializeGame() {
-		Location location = new Location(plugin.getServer().getWorlds().get(0), 3, 63, 6 * numberOfTeam);
+		Location location = new Location(plugin.getServer().getWorlds().get(0), 3, altar.getSurface(), 6 * numberOfTeam);
+		location.getChunk().load();
 		for (Player p : players) {
 			p.teleport(location);
 			p.setGameMode(GameMode.SURVIVAL);

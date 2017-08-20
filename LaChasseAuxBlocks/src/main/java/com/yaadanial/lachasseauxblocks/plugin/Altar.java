@@ -17,7 +17,8 @@ import org.bukkit.entity.Player;
  */
 public class Altar {
 
-	private static final int SURFACE = 63;
+	/** la hauteur du sol **/
+	private int surface;
 
 	/** Le plugin **/
 	private LCABPlugin plugin;
@@ -40,6 +41,7 @@ public class Altar {
 		this.blocks = new ArrayList<Block>();
 		this.placingBlocks = new ArrayList<Block>();
 		this.randomBlocks = new ArrayList<BlockTypeData>();
+		this.surface = plugin.getServer().getWorlds().get(0).getHighestBlockAt(4, 6 * team.getNumberOfTeam()).getY();
 	}
 
 	public LCABTeam getTeam() {
@@ -72,6 +74,14 @@ public class Altar {
 
 	public void setRandomBlocks(List<BlockTypeData> randomBlocks) {
 		this.randomBlocks = randomBlocks;
+	}
+
+	public int getSurface() {
+		return surface;
+	}
+
+	public void setSurface(int surface) {
+		this.surface = surface;
 	}
 
 	/**
@@ -109,7 +119,7 @@ public class Altar {
 	private void createBaseOfAltar(World world) {
 		for (int i = 0; i < 5; i++) {
 			for (int j = -2; j < 3; j++) {
-				blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 2 + i, -1 + SURFACE, j + (6 * team.getNumberOfTeam())));
+				blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 2 + i, -1 + surface, j + (6 * team.getNumberOfTeam())));
 			}
 		}
 	}
@@ -124,19 +134,19 @@ public class Altar {
 	private void createFirstFloorOfAltar(World world) {
 		for (int i = -2; i < 3; i++) {
 			//Création de la ligne de granite
-			blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 0 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 0 + surface, i + (6 * team.getNumberOfTeam())));
 			//Puis 2 lignes de Vide
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 0 + SURFACE, i + (6 * team.getNumberOfTeam())));
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 0 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 0 + surface, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 0 + surface, i + (6 * team.getNumberOfTeam())));
 			//La 1ere ligne de Vide
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 0 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 0 + surface, i + (6 * team.getNumberOfTeam())));
 		}
 		//Création de la ligne avec les estrades
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + SURFACE, -2 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 3, 0 + SURFACE, -1 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + SURFACE, 0 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 3, 0 + SURFACE, 1 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + SURFACE, 2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + surface, -2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 3, 0 + surface, -1 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + surface, 0 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.STONE, 6, 3, 0 + surface, 1 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 0 + surface, 2 + (6 * team.getNumberOfTeam())));
 	}
 
 	/**
@@ -149,27 +159,27 @@ public class Altar {
 	private void createSecondFloorOfAltar(World world) {
 
 		//Création de la ligne Granite/block aléatoire
-		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + SURFACE, -2 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, randomBlocks.get(0).getMaterial(), randomBlocks.get(0).getData(), 6, 1 + SURFACE, -1 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + SURFACE, 0 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, randomBlocks.get(1).getMaterial(), randomBlocks.get(1).getData(), 6, 1 + SURFACE, 1 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + SURFACE, 2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + surface, -2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, randomBlocks.get(0).getMaterial(), randomBlocks.get(0).getData(), 6, 1 + surface, -1 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + surface, 0 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, randomBlocks.get(1).getMaterial(), randomBlocks.get(1).getData(), 6, 1 + surface, 1 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 1 + surface, 2 + (6 * team.getNumberOfTeam())));
 		for (int i = -2; i < 3; i++) {
 			//Puis 2 lignes de Vide
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 1 + SURFACE, i + (6 * team.getNumberOfTeam())));
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 1 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 1 + surface, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 1 + surface, i + (6 * team.getNumberOfTeam())));
 			//La 1ere ligne de Vide
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 1 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 1 + surface, i + (6 * team.getNumberOfTeam())));
 		}
 		//Création des 2 Blocks à placer
-		Block placingBlocks1 = BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + SURFACE, -1 + (6 * team.getNumberOfTeam()));
-		Block placingBlocks2 = BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + SURFACE, 1 + (6 * team.getNumberOfTeam()));
+		Block placingBlocks1 = BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + surface, -1 + (6 * team.getNumberOfTeam()));
+		Block placingBlocks2 = BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + surface, 1 + (6 * team.getNumberOfTeam()));
 
 		//Création de la ligne avec les blocks à placer
 		//ps : les blocks à placer ne font pas partie de l'Autel
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + SURFACE, -2 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + SURFACE, 0 + (6 * team.getNumberOfTeam())));
-		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + SURFACE, 2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + surface, -2 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + surface, 0 + (6 * team.getNumberOfTeam())));
+		blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 1 + surface, 2 + (6 * team.getNumberOfTeam())));
 
 		//Sauvegarde des Blocks à placer
 		placingBlocks.add(placingBlocks1);
@@ -186,12 +196,12 @@ public class Altar {
 	private void createThirdFloorOfAltar(World world) {
 		for (int i = -2; i < 3; i++) {
 			//Création de la ligne de granite
-			blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 2 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.STONE, 2, 6, 2 + surface, i + (6 * team.getNumberOfTeam())));
 			//Puis 4 lignes de Vide
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 2 + SURFACE, i + (6 * team.getNumberOfTeam())));
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 2 + SURFACE, i + (6 * team.getNumberOfTeam())));
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 2 + SURFACE, i + (6 * team.getNumberOfTeam())));
-			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 2 + SURFACE, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 5, 2 + surface, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 4, 2 + surface, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 3, 2 + surface, i + (6 * team.getNumberOfTeam())));
+			blocks.add(BlockUtil.createABlock(world, Material.AIR, 1, 2, 2 + surface, i + (6 * team.getNumberOfTeam())));
 		}
 	}
 
