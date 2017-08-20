@@ -3,8 +3,11 @@ package com.yaadanial.lachasseauxblocks.plugin;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -61,6 +64,24 @@ public class LCABTeam {
 	public void teleportTo(Location lo) {
 		for (Player p : players) {
 			p.teleport(lo);
+		}
+	}
+
+	public void initializeGame() {
+		Location location = new Location(plugin.getServer().getWorlds().get(0), 3, 63, 6 * numberOfTeam);
+		for (Player p : players) {
+			p.teleport(location);
+			p.setGameMode(GameMode.SURVIVAL);
+			p.setHealth(20);
+			p.setFoodLevel(20);
+			p.setExhaustion(5F);
+			p.getInventory().clear();
+			p.getInventory().setArmorContents(new ItemStack[] { new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR) });
+			p.setExp(0L + 0F);
+			p.setLevel(0);
+			p.closeInventory();
+			p.getActivePotionEffects().clear();
+			p.setBedSpawnLocation(location, true);
 		}
 	}
 

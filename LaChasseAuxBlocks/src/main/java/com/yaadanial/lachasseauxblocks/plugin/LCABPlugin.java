@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -111,6 +112,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 					for (LCABTeam team : teams) {
 						blocksFindByTeam.addBlocksFindByTeam(team.getDisplayName(), 0);
 						team.getAltar().generate(randomBlocks);
+						team.initializeGame();
 					}
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 				} else {
@@ -127,6 +129,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 				scoreBoardManager.getChronometre().stop();
 				this.gameRunning = false;
 				restartAltar();
+				setAllPlayersIntoSpectate();
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -181,6 +184,14 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 			}
 		}
 		return false;
+	}
+
+	public void setAllPlayersIntoSpectate() {
+		for (LCABTeam team : teams) {
+			for (Player player : team.getPlayers()) {
+				player.setGameMode(GameMode.SPECTATOR);
+			}
+		}
 	}
 
 	public boolean createTeam(String name, ChatColor color) {
@@ -359,6 +370,7 @@ public class LCABPlugin extends JavaPlugin implements ConversationAbandonedListe
 
 	public void deleteATeam(LCABTeam team) {
 		teams.remove(team);
+		scoreBoardManager.getScoreBoard().getTeam(team.getDisplayName()).unregister();
 	}
 
 	public AskingBlock getAskingBlocks() {

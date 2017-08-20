@@ -33,9 +33,7 @@ public class LCABPluginListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		if (!this.plugin.isGameRunning()) {
-			event.getPlayer().setGameMode(GameMode.CREATIVE);
-		}
+		event.getPlayer().setGameMode(GameMode.SPECTATOR);
 		plugin.getScoreBoardManager().addToScoreboard(event.getPlayer());
 		Bukkit.getScheduler().runTaskLater(this.plugin, new BukkitRunnable() {
 
@@ -97,6 +95,7 @@ public class LCABPluginListener implements Listener {
 											plugin.getScoreBoardManager().getChronometre().stop();
 											plugin.setGameRunning(false);
 											plugin.restartAltar();
+											plugin.setAllPlayersIntoSpectate();
 										}
 									} else {
 										event.getPlayer().sendMessage(ChatColor.RED + "Ce n'est pas le bon block !");
