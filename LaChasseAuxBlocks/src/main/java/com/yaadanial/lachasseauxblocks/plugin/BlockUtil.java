@@ -2,18 +2,11 @@ package com.yaadanial.lachasseauxblocks.plugin;
 
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-/**
- * Classe Utilitaire pour les Blocks
- * 
- * @author Yaadanial
- *
- */
 public class BlockUtil {
 
 	/**
@@ -46,13 +39,13 @@ public class BlockUtil {
 	 * @return le block créé
 	 */
 	public static Block createRandomBlock(Player pl, World w, int x, int y, int z) {
-		AskingBlock askingBlocks = new AskingBlock();
 		Block block = w.getBlockAt(pl.getLocation().getBlockX() + x, pl.getLocation().getBlockY() + y, pl.getLocation().getBlockZ() + z);
 		Random random = new Random();
-		int index = random.nextInt(askingBlocks.getAskingBlock().size());
-		block.setType(askingBlocks.getAskingBlock().get(index).getMaterial());
-		block.setData((byte) (int) askingBlocks.getAskingBlock().get(index).getData());
-		pl.sendMessage(ChatColor.GRAY + "Vous devez chercher un block de '" + askingBlocks.getAskingBlock().get(index).getName() + "'");
+		Material[] materials = Material.values();
+		int size = materials.length;
+		int index = random.nextInt(size);
+		Material randomMaterial = materials[index];
+		block.setType(randomMaterial);
 		return block;
 	}
 }
