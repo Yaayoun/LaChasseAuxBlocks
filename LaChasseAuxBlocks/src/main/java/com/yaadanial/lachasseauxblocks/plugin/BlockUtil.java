@@ -1,48 +1,32 @@
 package com.yaadanial.lachasseauxblocks.plugin;
 
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 
 /**
- * Classe de gestion des blocks
+ * Classe Utilitaire pour les Blocks
  * 
  * @author Yaadanial
  *
  */
-public class BlockTypeData {
+public class BlockUtil {
 
-	private Material material;
-	private Integer data;
-	private String name;
-
-	public BlockTypeData(Material material, Integer data, String name) {
-		super();
-		this.material = material;
-		this.data = data;
-		this.name = name;
+	/**
+	 * Créer un Block de Granite
+	 * 
+	 * @param world le Monde
+	 * @param type le type du block à créer
+	 * @param data l'extension du block à créer
+	 * @param x la position en X du Block
+	 * @param y la position en Y du Block
+	 * @param z la position en Z du Block
+	 * @return le block créé
+	 */
+	public static Block createABlock(World world, Material type, int data, int x, int y, int z) {
+		Block block = world.getBlockAt(x, y, z);
+		block.setType(type);
+		block.setData((byte) data);
+		return block;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Material getMaterial() {
-		return material;
-	}
-
-	public void setMaterial(Material material) {
-		this.material = material;
-	}
-
-	public Integer getData() {
-		return data;
-	}
-
-	public void setData(Integer data) {
-		this.data = data;
-	}
-
 }
