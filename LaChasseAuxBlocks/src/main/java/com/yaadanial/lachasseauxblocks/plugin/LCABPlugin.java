@@ -15,7 +15,6 @@ public class LCABPlugin extends JavaPlugin {
 	private Logger logger = null;
 	private Boolean gameRunning = false;
 	private Altar altar = null;
-	private List<Block> altar = new ArrayList<Block>();
 	private ScoreBoardManager scoreBoardManager = null;
 	private Chronometre chronometre = null;
 	private BlocksFoundByPlayer blocksFoundByPlayer = null;
