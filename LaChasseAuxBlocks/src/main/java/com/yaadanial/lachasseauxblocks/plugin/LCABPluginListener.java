@@ -72,7 +72,7 @@ public class LCABPluginListener implements Listener {
 	public void onBlockPlaceEvent(final BlockPlaceEvent event) {
 		boolean isOnTheAltar = false;
 		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
-			for (Block block : plugin.getAltar()) {
+			for (Block block : plugin.getAltar().getBlocks()) {
 				if (block.getX() == event.getBlock().getX() && block.getY() <= event.getBlock().getY() && block.getZ() == event.getBlock().getZ()) {
 					isOnTheAltar = true;
 				}
