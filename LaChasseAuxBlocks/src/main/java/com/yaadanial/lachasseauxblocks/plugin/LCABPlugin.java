@@ -9,14 +9,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 
 public class LCABPlugin extends JavaPlugin {
 
 	private Logger logger = null;
-	private Scoreboard sb = null;
 	private Boolean gameRunning = false;
 	private Altar altar = null;
+	private List<Block> altar = new ArrayList<Block>();
+	private ScoreBoardManager scoreBoardManager = null;
+	private Chronometre chronometre = null;
+	private BlocksFoundByPlayer blocksFoundByPlayer = null;
 
 	@Override
 	public void onEnable() {
@@ -29,6 +31,13 @@ public class LCABPlugin extends JavaPlugin {
 		getServer().getWorlds().get(0).setDifficulty(Difficulty.HARD);
 
 		getServer().getPluginManager().registerEvents(new LCABPluginListener(this), this);
+
+		chronometre = new Chronometre(this);
+
+		scoreBoardManager = new ScoreBoardManager(this);
+		scoreBoardManager.setMatchInfo();
+
+		blocksFoundByPlayer = new BlocksFoundByPlayer(0);
 	}
 
 	@Override
@@ -59,6 +68,11 @@ public class LCABPlugin extends JavaPlugin {
 
 					this.logToChat(ChatColor.GREEN + "--- L'Autel a Spawn ---");
 					this.gameRunning = true;
+					this.chronometre.run();
+					blocksFoundByPlayer = new BlocksFoundByPlayer(2);
+					for (Player player : getServer().getOnlinePlayers()) {
+						blocksFoundByPlayer.addBlocksFoundByPlayer(player.getName(), 0);
+					}
 				} else {
 					this.logToChat(ChatColor.RED + "La Chasse est déjà lancée !");
 				}
@@ -72,6 +86,7 @@ public class LCABPlugin extends JavaPlugin {
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				this.gameRunning = false;
 				altar = new Altar();
+				chronometre = new Chronometre(this);
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
 				// Téléporte le joueur sur l'autel
@@ -113,5 +128,29 @@ public class LCABPlugin extends JavaPlugin {
 
 	public void logToChat(String log) {
 		Bukkit.getServer().broadcastMessage(log);
+	}
+
+	public ScoreBoardManager getScoreBoardManager() {
+		return scoreBoardManager;
+	}
+
+	public void setScoreBoardManager(ScoreBoardManager scoreBoardManager) {
+		this.scoreBoardManager = scoreBoardManager;
+	}
+
+	public Chronometre getChronometre() {
+		return chronometre;
+	}
+
+	public void setChronometre(Chronometre chronometre) {
+		this.chronometre = chronometre;
+	}
+
+	public BlocksFoundByPlayer getBlocksFoundByPlayer() {
+		return blocksFoundByPlayer;
+	}
+
+	public void setBlocksFoundByPlay(BlocksFoundByPlayer blocksFoundByPlayer) {
+		this.blocksFoundByPlayer = blocksFoundByPlayer;
 	}
 }
