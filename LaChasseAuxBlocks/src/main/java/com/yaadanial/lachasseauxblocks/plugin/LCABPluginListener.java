@@ -38,14 +38,14 @@ public class LCABPluginListener implements Listener {
 
 	@EventHandler
 	public void onBlockBreakEvent(final BlockBreakEvent event) {
-		if (this.plugin.isGameRunning() && plugin.getAltar().contains(event.getBlock())) {
+		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onBlockBurnEvent(final BlockBurnEvent event) {
-		if (this.plugin.isGameRunning() && plugin.getAltar().contains(event.getBlock())) {
+		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}
@@ -54,10 +54,10 @@ public class LCABPluginListener implements Listener {
 	public void onBlockExplodeEvent(final EntityExplodeEvent event) {
 		boolean isExplodeAltar = false;
 		if (this.plugin.isGameRunning()) {
-			for (Block blockAltar : plugin.getAltar()) {
+			for (Block blockAltar : plugin.getAltar().getBlocks()) {
 				for (Block blockExplode : event.blockList()) {
 					if (blockAltar.getX() == blockExplode.getX() && blockAltar.getY() == blockExplode.getY() && blockAltar.getZ() == blockExplode.getZ()) {
-						ev.setCancelled(true);
+						event.setCancelled(true);
 						return;
 					}
 				}
@@ -71,8 +71,8 @@ public class LCABPluginListener implements Listener {
 	@EventHandler
 	public void onBlockPlaceEvent(final BlockPlaceEvent event) {
 		boolean isOnTheAltar = false;
-		if (this.plugin.isGameRunning() && plugin.getAltar().contains(event.getBlock())) {
-			for (Block block : plugin.getAltar()) {
+		if (this.plugin.isGameRunning() && plugin.getAltar().getBlocks().contains(event.getBlock())) {
+			for (Block block : plugin.getAltar().getBlocks()) {
 				if (block.getX() == event.getBlock().getX() && block.getY() <= event.getBlock().getY() && block.getZ() == event.getBlock().getZ()) {
 					isOnTheAltar = true;
 				}

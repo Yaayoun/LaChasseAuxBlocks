@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,7 +16,7 @@ public class LCABPlugin extends JavaPlugin {
 
 	private Logger logger = null;
 	private Boolean gameRunning = false;
-	private List<Block> altar = new ArrayList<Block>();
+	private Altar altar = null;
 	private ScoreBoardManager scoreBoardManager = null;
 	private Chronometre chronometre = null;
 	private BlocksFoundByPlayer blocksFoundByPlayer = null;
@@ -84,7 +86,7 @@ public class LCABPlugin extends JavaPlugin {
 				// On arrête la chasse.
 				this.logToChat(ChatColor.YELLOW + "--- La chasse a été annulée par " + s.getName() + " ---");
 				this.gameRunning = false;
-				altar = new ArrayList<Block>();
+				altar = new Altar();
 				chronometre = new Chronometre(this);
 				return true;
 			} else if (a[0].equalsIgnoreCase("tp")) {
@@ -109,6 +111,7 @@ public class LCABPlugin extends JavaPlugin {
 					Block block1 = pl.getWorld().getBlockAt(pl.getLocation().getBlockX() + i, pl.getLocation().getBlockY(), pl.getLocation().getBlockZ());
 					block1.setType(blockTypeData.getMaterial());
 					block1.setData((byte) (int) blockTypeData.getData());
+					logger.info(i + "/" + ab.getAskingBlock().size() + " : Le Block " + block1.getType() + " a spawn");
 				}
 				return true;
 			}
