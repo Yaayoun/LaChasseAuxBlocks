@@ -3,15 +3,26 @@ package com.yaadanial.lachasseauxblocks.plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
+/**
+ * Classe de gestion du Chronometre
+ * 
+ * @author Yaadanial
+ *
+ */
 public class Chronometre {
 
 	private LCABPlugin plugin = null;
-	private Integer minutes = 0;
-	private Integer seconds = 0;
-	private Integer hours = 0;
+	private Integer minutes;
+	private Integer seconds;
+	private Integer hours;
+	private boolean stop;
 
 	public Chronometre(LCABPlugin plugin) {
 		this.plugin = plugin;
+		this.minutes = 0;
+		this.seconds = 0;
+		this.hours = 0;
+		this.stop = false;
 	}
 
 	/**
@@ -22,17 +33,33 @@ public class Chronometre {
 			@Override
 			public void run() {
 				plugin.getScoreBoardManager().regenerateSidebar();
-				seconds++;
-				if (seconds == 60) {
-					minutes++;
-					seconds = 0;
-				}
-				if (minutes == 60) {
-					hours++;
-					minutes = 0;
+				if (!stop) {
+					seconds++;
+					if (seconds == 60) {
+						minutes++;
+						seconds = 0;
+					}
+					if (minutes == 60) {
+						hours++;
+						minutes = 0;
+					}
 				}
 			}
 		}, 20L, 20L);
+	}
+
+	/**
+	 * Stopper le Chronometre
+	 */
+	public void stop() {
+		stop = true;
+	}
+
+	/**
+	 * Redemarrer le Chronometre
+	 */
+	public void start() {
+		stop = false;
 	}
 
 	public Integer getMinutes() {
